@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "NeonPulse";
+  src: url("./assets/fonts/NeonLights-22d.ttf") format("truetype");
+  font-display: swap;
+}
+
+@theme {
+  --font-neon-pulse: "NeonPulse", monospace;
+}
+
+@utility logo {
+  font-family: var(--font-neon-pulse);
+  color: white;
+  text-shadow:
+    0 0 5px #00f5ff,
+    0 0 15px #00f5ff,
+    0 0 30px #ff4fd8;
+}
+
+@utility text-gradient {
+  background-image: linear-gradient(45deg, #ff33b4, #ff7e29);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
