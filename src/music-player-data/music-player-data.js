@@ -1,4 +1,4 @@
-import { SongNode, Playlist } from "../playlist-data/playlist-data";
+import { SongNode, Playlist } from "../playlist-data/playlist-data.js";
 
 // MusicPlayer manages playback and tracks current playlist + song
 export class MusicPlayer {
@@ -17,10 +17,17 @@ export class MusicPlayer {
 
   // playback controls ↓
 
+  //   TODO take a callback when playlist removes a song
+  /* playlist.onSongRemoved = (node) => {
+  if (player.currentNode === node) {
+    player.skip();
+  }
+}; */
+
   // play/pause, selectSong, nextSong, and prevSong methods
   play() {}
 
-  selectSong(songNode, playlist = this.currentPlaylist) {}
+  selectSong(node, playlist = this.currentPlaylist) {}
 
   skip() {}
 

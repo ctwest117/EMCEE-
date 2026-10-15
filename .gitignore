@@ -2,3 +2,5 @@ node_modules
 dist
 *.local
 issues
+audio
+tests

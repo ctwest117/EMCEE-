@@ -3,13 +3,13 @@ export class Song {
   static id = 0;
   constructor(
     title,
-    artist,
-    album,
-    coverURL,
-    albumIndex, //For ordering within album
-    genre,
-    audioSrc,
-    duration,
+    artist = "John Doe",
+    album = "Unkown",
+    coverURL = "../assets/images/default-cover.png",
+    albumIndex = 0, //For ordering within album
+    genre = null,
+    audioSrc = "../src/assets/audio/Faint Forte.mp3",
+    duration = null,
   ) {
     this.id = Song.id++;
     this.title = title;
