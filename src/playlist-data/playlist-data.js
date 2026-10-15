@@ -23,7 +23,7 @@ export class Playlist {
       const found = [...Playlist.myPlaylists.values()].filter(
         (playlist) => playlist.name === nameOrId,
       );
-      if (found.length <= 0) return null;
+      if (found.length <= 0) return -1;
       return found;
     }
   }
@@ -63,6 +63,8 @@ export class Playlist {
     this.appendNode(node);
   }
 
+  addNode(node) {}
+
   appendNode(node) {
     if (!(node instanceof SongNode)) {
       throw new TypeError("appendNode() expects a SongNode instance");
@@ -82,11 +84,6 @@ export class Playlist {
     node.orderAdded = this.nextOrder;
     this.nextOrder++;
     this.size++;
-    if (this.sortMethod === "default") {
-      this.getNewDuration();
-      return;
-    }
-    this.sortBy(this.sortMethod);
   }
 
   removeSong(node) {
@@ -172,11 +169,20 @@ export class Playlist {
 
   //  sorting, finding & moving songs
   sortBy(method = "default") {
-    const sortMethods = ["default", "reverse", "alpha", "album", "artist"];
+    const sortMethods = [
+      "none",
+      "default",
+      "reverse",
+      "alpha",
+      "album",
+      "artist",
+    ];
     if (!sortMethods.some((sort) => sort === method)) {
       throw new TypeError("Method not supported");
     }
     switch (method) {
+      case "none":
+        break;
       case "default":
         const sortedNodes = this.toArray().sort(
           (a, b) => a.orderAdded - b.orderAdded,
@@ -216,7 +222,7 @@ export class Playlist {
           if (a.song.artist === b.song.artist) {
             if (a.song.album < b.song.album) return -1;
             else if (a.song.album > b.song.album) return 1;
-            return a.song.albumIndex - b.song.albumIndex;
+            else return a.song.albumIndex - b.song.albumIndex;
           } else {
             if (a.song.artist < b.song.artist) return -1;
             return 1;
@@ -228,6 +234,8 @@ export class Playlist {
     }
   }
 
+  compareNodes(node1, node2) {}
+
   findById(id) {
     if (typeof id === "number") {
       let current = this.head;
@@ -236,53 +244,92 @@ export class Playlist {
         current = current.next;
       }
     }
-    return null;
+    return -1;
   }
 
   findByStr(str) {
+    if (typeof str !== "string") return -1;
     str = str.toLowerCase();
     const found = [];
     this.iterate((node) => {
-      if (
-        node.song.title.toLowerCase().includes(str) ||
-        node.song.album.toLowerCase().includes(str) ||
-        node.song.artist.toLowerCase().includes(str)
-      ) {
-        found.push(node);
+      if (!found.some(node)) {
+        if (node.song.title.toLowerCase().includes(str)) found.push(node);
+        if (node.song.album.toLowerCase().includes(str)) found.push(node);
+        if (node.song.artist.toLowerCase().includes(str)) found.push(node);
       }
     });
     return found;
   }
 
-  indexOf(songNode) {
+  posOf(songNode) {
     let current = this.head;
     for (let i = 0; i < this.size; i++) {
       if (current === songNode) return i;
       current = current.next;
     }
-    return null;
+    return -1;
   }
 
-  atIndex(index) {
+  atPos(pos) {
+    if (!Number.isInteger(pos) || pos < 0 || pos >= this.size) return -1;
     let current = this.head;
-    for (let i = 0; i <= index; i++) {
-      if (i == index) return current;
+    for (let i = 0; i <= pos; i++) {
+      if (i == pos) return current;
       current = current.next;
     }
-    return null;
+    return -1;
   }
 
   moveSong(node, pos) {
-    if (!node || node.playlist !== this) return null;
-    if (!Number.isInteger(pos) || pos < 0 || pos >= this.size) return null;
+    if (!(node instanceof SongNode)) {
+      throw new TypeError("moveSong() expects a songNode");
+    }
+    if (node.playlist !== this) {
+      throw new TypeError("songNode not in this playlist");
+    }
+    if (!Number.isInteger(pos) || pos < 0 || pos >= this.size) return -1;
 
-    const nodes = this.toArray();
-    const currentIndex = nodes.indexOf(node);
-    if (currentIndex === -1) return null;
+    // disconnect node from prev position
+    const prev = node.prev;
+    const next = node.next;
 
-    nodes.splice(currentIndex, 1);
-    nodes.splice(pos, 0, node);
-    this.toPlaylist(nodes);
+    if (!prev && !next) return node;
+    if (!prev) {
+      this.head = next;
+      next.prev = prev;
+    } else {
+      prev.next = next;
+    }
+    if (!next) {
+      this.tail = prev;
+      prev.next = next;
+    } else {
+      next.prev = prev;
+    }
+
+    //if added to the end
+    if (pos === this.size - 1) {
+      this.tail.next = node;
+      node.prev = this.tail;
+      node.next = null;
+      this.tail = node;
+      this.sortMethod = "none";
+      return node;
+    }
+
+    const target = this.atPos(pos);
+    const tarPrev = target.prev;
+    if (!tarPrev) {
+      this.head = node;
+      node.prev = null;
+    } else {
+      tarPrev.next = node;
+      node.prev = tarPrev;
+    }
+    node.next = target;
+    target.prev = node;
+
+    this.sortMethod = "none";
     return node;
   }
 
