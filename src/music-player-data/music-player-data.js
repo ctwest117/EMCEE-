@@ -17,12 +17,23 @@ export class MusicPlayer {
 
   // playback controls ↓
 
-  //   TODO take a callback when playlist removes a song
-  /* playlist.onSongRemoved = (node) => {
-  if (player.currentNode === node) {
-    player.skip();
+  //   TODO take a callback when playlist removes a song or playlist
+  onPlaylistRemoved(playlist) {
+    if (this.currentPlaylist !== playlist) return;
+    this.currentPlaylist === null;
+    this.isPlaying = false;
+    this.currentNode = null;
   }
-}; */
+  onSongRemoved(node) {
+    if (this.currentNode !== node) return;
+    if (node.next) {
+      this.skip();
+    } else if (node.prev) {
+      this.prev();
+    } else {
+      this.currentNode = null;
+    }
+  }
 
   // play/pause, selectSong, nextSong, and prevSong methods
   play() {}

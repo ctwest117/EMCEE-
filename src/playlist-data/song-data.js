@@ -2,14 +2,14 @@
 export class Song {
   static id = 0;
   constructor(
-    title,
-    artist = "John Doe",
-    album = "Unkown",
+    title = "Faint Forte",
+    artist = "Slip Park",
+    album = "We Are Not Your Meteora",
     coverURL = "../assets/images/default-cover.png",
     albumIndex = 0, //For ordering within album
-    genre = null,
+    genre = "Nu Metal",
     audioSrc = "../src/assets/audio/Faint Forte.mp3",
-    duration = null,
+    duration = 295000,
   ) {
     this.id = Song.id++;
     this.title = title;
