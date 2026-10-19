@@ -300,7 +300,6 @@ export class MusicPlayer {
   removeFromQueue(node) {
     if (!this.queue.includes(node)) return -1;
     this.queue = this.queue.filter((song) => song !== node);
-    if (this.queue.length === 0) this.isQueue = false;
     return node;
   }
 
