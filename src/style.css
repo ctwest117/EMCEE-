@@ -25,3 +25,7 @@
   background-clip: text;
   color: transparent;
 }
+
+audio::-webkit-media-controls-play-button {
+  display: none;
+}

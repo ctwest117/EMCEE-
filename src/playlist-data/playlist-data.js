@@ -8,6 +8,10 @@ export class SongNode {
     this.playlist = null; //for when a song is selected in different playlist. will update when added to playlist
     this.next = null;
     this.prev = null;
+
+    // temp
+    this.nextShuffled = null;
+    this.prevShuffled = null;
   }
 }
 
@@ -20,8 +24,8 @@ export class Playlist {
     if (Playlist.myPlaylists.get(nameOrId)) {
       return [Playlist.myPlaylists.get(nameOrId)];
     } else {
-      const found = [...Playlist.myPlaylists.values()].filter(
-        (playlist) => playlist.name === nameOrId,
+      const found = [...Playlist.myPlaylists.values()].filter((playlist) =>
+        playlist.name.toLowerCase().includes(nameOrId.toLowerCase()),
       );
       return found;
     }
@@ -34,17 +38,18 @@ export class Playlist {
   static removePlaylist(playlist) {
     if (!playlist || playlist === Playlist.favorites) return false;
 
+    playlist.onPlaylistRemoved?.(playlist);
+
     const removed = Playlist.myPlaylists.delete(playlist.id);
     if (!removed) return false;
 
-    playlist.onPlaylistRemoved?.(playlist);
     return true;
   }
 
   static nextId = 100;
 
-  constructor(name, cover) {
-    this.id = "playlist" + Playlist.nextId++;
+  constructor(name, cover = "../assets/images/default-cover.png") {
+    this.id = Playlist.nextId++;
     this.name = name;
     this.cover = cover;
     this.head = null;
@@ -127,6 +132,8 @@ export class Playlist {
   removeSong(node) {
     if (!node || node.playlist !== this) return;
 
+    this.onSongRemoved?.(node);
+
     const prev = node.prev;
     const next = node.next;
 
@@ -140,8 +147,6 @@ export class Playlist {
     } else {
       next.prev = prev;
     }
-
-    this.onSongRemoved?.(node);
 
     const song = node.song;
     node.song = null;
@@ -171,6 +176,7 @@ export class Playlist {
   //   iterate through playlist nodes
   iterate(callback) {
     let current = this.head;
+    if (!current) return;
     for (let i = 0; i < this.size; i++) {
       callback(current, i, this);
       current = current.next;
