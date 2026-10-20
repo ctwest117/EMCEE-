@@ -18,6 +18,9 @@ window.addEventListener("beforeunload", () => {
 Playlist.restore();
 Player.restore();
 
+// import { createIcons, Trash2 } from "lucide";
+// createIcons({ icons: { Trash2 } });
+
 window.Lib = Lib;
 window.searchSongs = searchSongs;
 window.Playlist = Playlist;
