@@ -1,5 +1,5 @@
 import { SongNode, Playlist } from "../playlist-data/playlist-data.js";
-import { Song } from "../playlist-data/song-data.js";
+import { Song } from "../song-data/song-data.js";
 
 // MusicPlayer manages playback and tracks current playlist + song
 export class MusicPlayer {
@@ -106,7 +106,10 @@ export class MusicPlayer {
   }
   // play/pause, selectSong, nextSong, and prevSong methods
   play() {
-    if (!this.currentNode) return;
+    if (!this.currentNode) {
+      if (!this.currentPlaylist) return;
+      else this.currentNode = this.playbackOrder.at(0);
+    }
     if (this.isPlaying) {
       this.audio.pause();
       this.isPlaying = false;
@@ -311,21 +314,5 @@ export class MusicPlayer {
   nextInQueue() {
     const result = this.queue.shift();
     return result ?? null;
-  }
-
-  //favorites
-  addToFavorites(song) {
-    if (!(song instanceof Song)) {
-      throw new TypeError("addToFavorites() expects a Song");
-    }
-    Playlist.favorites.addSong(song);
-    song.isFavorite = true;
-  }
-  removeFromFavorites(node) {
-    if (!(node instanceof SongNode)) {
-      throw new TypeError("removeFromFavorite() expects a SongNode");
-    }
-    node.song.isFavorite = false;
-    Playlist.favorites.removeSong(node);
   }
 }

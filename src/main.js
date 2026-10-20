@@ -1,9 +1,22 @@
 import { MusicPlayer } from "./music-player-data/music-player-data";
-import { Song } from "./playlist-data/song-data";
+import { Song } from "./song-data/song-data";
 import { Playlist } from "./playlist-data/playlist-data";
+import { searchSongs } from "./api-data/api-query";
 import "./style.css";
-const player = new MusicPlayer();
+import { Lib } from "./song-data/song-library";
+const Player = new MusicPlayer();
+window.addEventListener("beforeunload", () => Playlist.save());
+
+// const bbArr = await searchSongs("Breaking Benjamin", 50);
+// bbArr.forEach((a) => {
+//   if (a.at(-1) === "song") Playlist.favorites.addSong(new Song(...a));
+// });
+
+Playlist.restore();
+
+Player.selectPlaylist(Playlist.favorites);
+window.Lib = Lib;
+window.searchSongs = searchSongs;
 window.Playlist = Playlist;
-window.player = player;
+window.Player = Player;
 window.Song = Song;
-console.log(Playlist.myPlaylists);

@@ -1,8 +1,13 @@
-import { Song } from "./song-data.js";
+import { Song } from "../song-data/song-data.js";
+import { Lib } from "../song-data/song-library.js";
 
 // holds song inside playlist
 export class SongNode {
   constructor(song) {
+    if (!(song instanceof Song)) {
+      throw new TypeError("SongNode expects a Song instance");
+    }
+
     this.song = song;
     this.orderAdded = 0;
     this.playlist = null; //for when a song is selected in different playlist. will update when added to playlist
@@ -12,14 +17,16 @@ export class SongNode {
     // temp
     this.nextShuffled = null;
     this.prevShuffled = null;
+
+    Lib.add(song);
   }
 }
 
 //  playlist class builds and handles playlists
 export class Playlist {
+  //   adding and removing playlists to the manager array
   static myPlaylists = new Map();
 
-  //   adding and removing playlists to the manager array
   static findPlaylist(nameOrId) {
     if (Playlist.myPlaylists.get(nameOrId)) {
       return [Playlist.myPlaylists.get(nameOrId)];
@@ -32,10 +39,16 @@ export class Playlist {
   }
 
   static addPlaylist(playlist) {
+    if (!(playlist instanceof Playlist)) {
+      throw new TypeError("addPlaylist() expects a Playlist instance");
+    }
     Playlist.myPlaylists.set(playlist.id, playlist);
   }
 
   static removePlaylist(playlist) {
+    if (!(playlist instanceof Playlist)) {
+      throw new TypeError("removePlaylist() expects a Playlist instance");
+    }
     if (!playlist || playlist === Playlist.favorites) return false;
 
     playlist.onPlaylistRemoved?.(playlist);
@@ -46,10 +59,16 @@ export class Playlist {
     return true;
   }
 
+  // constructor
   static nextId = 100;
 
-  constructor(name, cover = "../assets/images/default-cover.png") {
-    this.id = Playlist.nextId++;
+  constructor(
+    name,
+    cover = "../assets/images/default-cover.png",
+    id = Playlist.nextId++,
+    addToPlaylists = true,
+  ) {
+    this.id = id;
     this.name = name;
     this.cover = cover;
     this.head = null;
@@ -60,7 +79,78 @@ export class Playlist {
     this.sortMethod = "default";
     this.onSongRemoved = null;
 
-    Playlist.addPlaylist(this);
+    if (addToPlaylists) Playlist.addPlaylist(this);
+  }
+
+  // favorites playlist
+  static favorites = new Playlist("Favorites");
+
+  static addToFavorites(song) {
+    if (!(song instanceof Song)) {
+      throw new TypeError("addToFavorites() expects a Song");
+    }
+    Playlist.favorites.addSong(song);
+    song.isFavorite = true;
+  }
+
+  static removeFromFavorites(node) {
+    if (!(node instanceof SongNode)) {
+      throw new TypeError("removeFromFavorite() expects a SongNode");
+    }
+    node.song.isFavorite = false;
+    Playlist.favorites.removeSong(node);
+  }
+
+  //  saving and restoring playlists
+  static keys = "PLAYLIST_KEYS";
+
+  static save() {
+    Lib.save();
+    const result = [];
+    for (const playlist of Playlist.myPlaylists.values()) {
+      result.push({
+        id: playlist.id,
+        name: playlist.name,
+        cover: playlist.cover,
+        songs: playlist.toSongArray().map((song) => song.id),
+        sortMethod: playlist.sortMethod,
+      });
+    }
+    localStorage.setItem(Playlist.keys, JSON.stringify(result));
+    console.log(result);
+  }
+
+  static restore() {
+    Lib.restore();
+    const saved = localStorage.getItem(Playlist.keys);
+    if (!saved) return false;
+    const res = JSON.parse(saved);
+    res.forEach((playlist) => {
+      if (playlist.id >= Playlist.nextId) Playlist.nextId = playlist.id + 1;
+
+      if (playlist.id === 100) {
+        playlist.songs.forEach((songId) => {
+          const song = Lib.songs.get(songId) ?? null;
+          if (song) if (song.isFavorite) Playlist.favorites.addSong(song);
+        });
+        return true;
+      }
+
+      const newPlaylist = new Playlist(
+        playlist.name,
+        playlist.cover,
+        playlist.id,
+      );
+      newPlaylist.sortMethod = "none";
+
+      playlist.songs.forEach((songId) => {
+        const song = Lib.songs.get(songId) ?? null;
+        if (song) newPlaylist.addSong(song);
+      });
+
+      newPlaylist.sortMethod = playlist.sortMethod;
+    });
+    return true;
   }
 
   //   add or remove songs & nodes
@@ -80,6 +170,7 @@ export class Playlist {
     if (node.playlist) {
       throw new TypeError("songNode belongs to another Playlist");
     }
+    if (this.toArray().some((a) => a.song.id === node.song.id)) return;
 
     node.orderAdded = this.nextOrder++;
     node.playlist = this;
@@ -239,7 +330,7 @@ export class Playlist {
 
     const sortedNodes = this.toArray().sort((a, b) => this.compareNodes(a, b));
     this.toPlaylist(sortedNodes);
-    this.head.prev = null;
+    if (this.head) this.head.prev = null;
     return method;
   }
 
@@ -371,7 +462,4 @@ export class Playlist {
     this.head.prev = null;
     return node;
   }
-
-  // favorites playlist
-  static favorites = new Playlist("Favorites");
 }
