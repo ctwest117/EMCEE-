@@ -5,7 +5,10 @@ import { searchSongs } from "./api-data/api-query";
 import "./style.css";
 import { Lib } from "./song-data/song-library";
 const Player = new MusicPlayer();
-window.addEventListener("beforeunload", () => Playlist.save());
+window.addEventListener("beforeunload", () => {
+  Playlist.save();
+  Player.save();
+});
 
 // const bbArr = await searchSongs("Breaking Benjamin", 50);
 // bbArr.forEach((a) => {
@@ -13,10 +16,11 @@ window.addEventListener("beforeunload", () => Playlist.save());
 // });
 
 Playlist.restore();
+Player.restore();
 
-Player.selectPlaylist(Playlist.favorites);
 window.Lib = Lib;
 window.searchSongs = searchSongs;
 window.Playlist = Playlist;
 window.Player = Player;
 window.Song = Song;
+console.log("hello");

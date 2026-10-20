@@ -1,5 +1,3 @@
-import { Lib } from "./song-library";
-
 // Song node contains all song info, carrys across playlists
 export class Song {
   constructor(
@@ -12,7 +10,7 @@ export class Song {
     genre = "Nu Metal",
     audioSrc = "../src/assets/audio/Faint Forte.mp3",
     duration = 295000,
-    kind = song,
+    kind = "song",
   ) {
     this.id = id;
     this.title = title;

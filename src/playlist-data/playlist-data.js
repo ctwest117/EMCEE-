@@ -14,7 +14,7 @@ export class SongNode {
     this.next = null;
     this.prev = null;
 
-    // temp
+    // shuffle connections
     this.nextShuffled = null;
     this.prevShuffled = null;
 

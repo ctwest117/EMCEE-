@@ -1,14 +1,18 @@
-import { Song } from "./song-data";
+import { Song } from "./song-data.js";
 // local saved songs
 class Library {
   songs = new Map();
 
   // add and remove songs
   add(song) {
+    if (this.songs.has(song.id)) return false;
     this.songs.set(song.id, song);
+    return true;
   }
   del(song) {
+    if (!this.songs.has(song.id)) return false;
     this.songs.delete(song.id);
+    return true;
   }
 
   // save and restore Library to and from localstorage
@@ -36,6 +40,7 @@ class Library {
         song.kind,
       );
       newSong.isFavorite = song.isFavorite;
+      this.add(newSong);
     });
     return true;
   }

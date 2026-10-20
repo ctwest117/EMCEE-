@@ -7,8 +7,7 @@ export class MusicPlayer {
     this.currentPlaylist = null;
     this.currentNode = null;
     this.audio = document.getElementById("music");
-    this.volume = 1.0;
-    this.playBackPosition = 0;
+    this.keys = "PLAYBACK_KEYS";
     this.playbackOrder = null;
     this.shuffleHead = null;
     this.shuffleTail = null;
@@ -25,6 +24,37 @@ export class MusicPlayer {
         this.skip();
       }
     });
+  }
+
+  // save and restore playback
+  save() {
+    const save = {
+      listId: this.currentPlaylist ? this.currentPlaylist.id : 100,
+      songPos: this.currentPlaylist
+        ? this.currentPlaylist.posOf(this.currentNode)
+        : -1,
+      time: this.audio.currentTime,
+    };
+    localStorage.setItem(this.keys, JSON.stringify(save));
+  }
+
+  restore() {
+    const save = localStorage.getItem(this.keys);
+    if (!save) return -1;
+    const res = JSON.parse(save);
+    const playlist =
+      Playlist.myPlaylists.get(res.listId ?? 100) ?? Playlist.favorites;
+
+    this.selectPlaylist(playlist);
+    if (playlist.size === 0) return;
+
+    const index = res.songPos;
+    const node =
+      Number.isInteger(index) && index >= 0 ? this.playbackOrder[index] : null;
+
+    if (node) this.selectSong(node);
+
+    this.audio.currentTime = res.time ?? 0;
   }
 
   // playback controls ↓
