@@ -87,6 +87,26 @@ export function miniPlayerListeners(player) {
   const toggleFav = document.querySelector("#toggle-favorite");
   if (!progress || !playPause || !previous || !next || !toggleFav) return;
 
+  // Persist playback progress every few seconds, and exactly when it pauses
+  // or the user finishes seeking. Avoid writing to storage on every timeupdate.
+  let lastSavedTime = player.audio.currentTime;
+  player.audio.addEventListener("timeupdate", () => {
+    const currentTime = player.audio.currentTime;
+    if (
+      !player.isRestoringPlayback &&
+      Math.abs(currentTime - lastSavedTime) >= 5
+    ) {
+      player.save();
+      lastSavedTime = currentTime;
+    }
+  });
+  player.audio.addEventListener("pause", () => {
+    if (!player.isRestoringPlayback) player.save();
+  });
+  progress.addEventListener("change", () => {
+    if (!player.isRestoringPlayback) player.save();
+  });
+
   playPause.addEventListener("click", () => player.play());
   previous.addEventListener("click", () => {
     player.prev();

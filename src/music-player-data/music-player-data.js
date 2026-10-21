@@ -16,6 +16,7 @@ export class MusicPlayer {
     this.isShuffled = false;
     this.loop = "off";
     this.isQueue = false;
+    this.isRestoringPlayback = false;
     this.queue = []; //queue carries between playlists
     this.queuePrev = null; //the last normal song played beforre queue, it changes everytime a song that isnt a queue song is selected or played
   }
@@ -39,16 +40,21 @@ export class MusicPlayer {
     const playlist =
       Playlist.myPlaylists.get(res.listId ?? 100) ?? Playlist.favorites;
 
-    this.selectPlaylist(playlist);
-    if (playlist.size === 0) return;
+    this.isRestoringPlayback = true;
+    try {
+      this.selectPlaylist(playlist);
+      if (playlist.size === 0) return;
 
-    const index = res.songPos;
-    const node =
-      Number.isInteger(index) && index >= 0 ? this.playbackOrder[index] : null;
+      const index = res.songPos;
+      const node =
+        Number.isInteger(index) && index >= 0 ? this.playbackOrder[index] : null;
 
-    if (node) this.selectSong(node);
+      if (node) this.selectSong(node);
 
-    this.audio.currentTime = res.time ?? 0;
+      this.audio.currentTime = res.time ?? 0;
+    } finally {
+      this.isRestoringPlayback = false;
+    }
   }
 
   // playback controls ↓
@@ -127,6 +133,7 @@ export class MusicPlayer {
     if (this.isPlaying && !!this.currentNode) {
       this.audio.play().catch((err) => console.error("Could not play", err));
     }
+    if (!this.isRestoringPlayback) this.save();
   }
   // play/pause, selectSong, nextSong, and prevSong methods
   play() {

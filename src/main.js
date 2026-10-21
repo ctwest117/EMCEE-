@@ -9,20 +9,28 @@ import {
   miniPlayerListeners,
   syncMiniPlayer,
 } from "./mini-player/mini-player-data";
-
 export const Player = new MusicPlayer();
 
 renderMini();
 miniPlayerListeners(Player);
 
-window.addEventListener("beforeunload", () => {
+function saveAppState() {
   Playlist.save();
   Player.save();
+}
+
+// Save when the app is backgrounded or navigated away from, including on mobile.
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden") saveAppState();
 });
+window.addEventListener("pagehide", saveAppState);
 
 Playlist.restore();
 Player.restore();
+
 syncMiniPlayer(Player);
+// Persist the fully restored startup state once, after restore has finished.
+Playlist.save();
 
 window.searchSongs = searchSongs;
 window.Lib = Lib;

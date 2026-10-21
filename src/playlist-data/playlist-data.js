@@ -26,6 +26,7 @@ export class SongNode {
 export class Playlist {
   //   adding and removing playlists to the manager array
   static myPlaylists = new Map();
+  static isRestoring = false;
 
   static findPlaylist(nameOrId) {
     if (Playlist.myPlaylists.get(nameOrId)) {
@@ -43,6 +44,7 @@ export class Playlist {
       throw new TypeError("addPlaylist() expects a Playlist instance");
     }
     Playlist.myPlaylists.set(playlist.id, playlist);
+    if (Playlist.keys && !Playlist.isRestoring) Playlist.save();
   }
 
   static removePlaylist(playlist) {
@@ -56,6 +58,7 @@ export class Playlist {
     const removed = Playlist.myPlaylists.delete(playlist.id);
     if (!removed) return false;
 
+    if (!Playlist.isRestoring) Playlist.save();
     return true;
   }
 
@@ -89,17 +92,26 @@ export class Playlist {
     if (!(song instanceof Song)) {
       throw new TypeError("addToFavorites() expects a Song");
     }
-    Playlist.favorites.addSong(song);
-    song.isFavorite = true;
+    const librarySong = Lib.songs.get(song.id) ?? song;
+    librarySong.isFavorite = true;
+    const node = Playlist.favorites.addSong(librarySong);
+    // A duplicate favorite does not add a node, but its flag may still need saving.
+    if (!node && !Playlist.isRestoring) Playlist.save();
+    return node;
   }
 
   static removeFromFavorites(song) {
     if (!(song instanceof Song)) {
       throw new TypeError("removeFromFavorite() expects a Song");
     }
-    song.isFavorite = false;
-    const node = Playlist.favorites.findById(song.id);
-    Playlist.favorites.removeSong(node);
+    const librarySong = Lib.songs.get(song.id) ?? song;
+    librarySong.isFavorite = false;
+    const node = Playlist.favorites.findById(librarySong.id);
+    if (node !== -1) node.song.isFavorite = false;
+    const removedSong = Playlist.favorites.removeSong(node);
+    // removeSong saves when it removes a node; save here if there was no node.
+    if (!removedSong && !Playlist.isRestoring) Playlist.save();
+    return removedSong;
   }
 
   //  saving and restoring playlists
@@ -118,40 +130,45 @@ export class Playlist {
       });
     }
     localStorage.setItem(Playlist.keys, JSON.stringify(result));
-    console.log(result);
+    // console.log(result);
   }
 
   static restore() {
-    Lib.restore();
-    const saved = localStorage.getItem(Playlist.keys);
-    if (!saved) return false;
-    const res = JSON.parse(saved);
-    res.forEach((playlist) => {
-      if (playlist.id >= Playlist.nextId) Playlist.nextId = playlist.id + 1;
+    Playlist.isRestoring = true;
+    try {
+      Lib.restore();
+      const saved = localStorage.getItem(Playlist.keys);
+      if (!saved) return false;
+      const res = JSON.parse(saved);
+      res.forEach((playlist) => {
+        if (playlist.id >= Playlist.nextId) Playlist.nextId = playlist.id + 1;
 
-      if (playlist.id === 100) {
+        if (playlist.id === 100) {
+          playlist.songs.forEach((songId) => {
+            const song = Lib.songs.get(songId) ?? null;
+            if (song?.isFavorite) Playlist.addToFavorites(song);
+          });
+          return;
+        }
+
+        const newPlaylist = new Playlist(
+          playlist.name,
+          playlist.cover,
+          playlist.id,
+        );
+        newPlaylist.sortMethod = "none";
+
         playlist.songs.forEach((songId) => {
           const song = Lib.songs.get(songId) ?? null;
-          if (song) if (song.isFavorite) Playlist.addToFavorites(song);
+          if (song) newPlaylist.addSong(song);
         });
-        return true;
-      }
 
-      const newPlaylist = new Playlist(
-        playlist.name,
-        playlist.cover,
-        playlist.id,
-      );
-      newPlaylist.sortMethod = "none";
-
-      playlist.songs.forEach((songId) => {
-        const song = Lib.songs.get(songId) ?? null;
-        if (song) newPlaylist.addSong(song);
+        newPlaylist.sortMethod = playlist.sortMethod;
       });
-
-      newPlaylist.sortMethod = playlist.sortMethod;
-    });
-    return true;
+      return true;
+    } finally {
+      Playlist.isRestoring = false;
+    }
   }
 
   //   add or remove songs & nodes
@@ -182,6 +199,7 @@ export class Playlist {
       this.appendNode(node);
       this.size++;
       this.getNewDuration();
+      if (!Playlist.isRestoring) Playlist.save();
       return node;
     }
 
@@ -203,6 +221,7 @@ export class Playlist {
 
     this.size++;
     this.getNewDuration();
+    if (!Playlist.isRestoring) Playlist.save();
     return node;
   }
   //↓ low level helper, does not modify anything but the nxt and prev
@@ -247,6 +266,7 @@ export class Playlist {
     node.prev = null;
     this.size--;
     this.getNewDuration();
+    if (!Playlist.isRestoring) Playlist.save();
     return song;
   }
 
@@ -263,6 +283,7 @@ export class Playlist {
       this.nextOrder = 0;
     }
     this.duration = 0;
+    if (fullReset && !Playlist.isRestoring) Playlist.save();
   }
 
   //   iterate through playlist nodes
@@ -327,11 +348,15 @@ export class Playlist {
       throw new TypeError("Method not supported");
     }
     this.sortMethod = method;
-    if (method === "none") return;
+    if (method === "none") {
+      if (!Playlist.isRestoring) Playlist.save();
+      return method;
+    }
 
     const sortedNodes = this.toArray().sort((a, b) => this.compareNodes(a, b));
     this.toPlaylist(sortedNodes);
     if (this.head) this.head.prev = null;
+    if (!Playlist.isRestoring) Playlist.save();
     return method;
   }
 
@@ -444,6 +469,7 @@ export class Playlist {
       node.next = null;
       this.tail = node;
       this.sortMethod = "none";
+      if (!Playlist.isRestoring) Playlist.save();
       return node;
     }
 
@@ -461,6 +487,7 @@ export class Playlist {
 
     this.sortMethod = "none";
     this.head.prev = null;
+    if (!Playlist.isRestoring) Playlist.save();
     return node;
   }
 }

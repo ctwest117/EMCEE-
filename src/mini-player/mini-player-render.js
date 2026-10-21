@@ -11,7 +11,7 @@ export function renderMini() {
   // the full width above them.
   miniPlayer.innerHTML = /* html */ `
     <section
-      class="grid min-w-screen inset-x-0 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-5 gap-y-1 rounded-t-4xl border-t border-blue-600 bg-slate-950/90 px-5 py-4 text-white shadow-[0_0_24px_rgba(0,82,255,0.18)] backdrop-blur-lg sm:px-8 md:gap-x-8 md:px-10"
+      class="grid min-w-screen inset-x-0 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-5 gap-y-0 rounded-t-4xl border-t border-blue-600 bg-slate-950/90 px-5 py-4 text-white shadow-[0_0_24px_rgba(0,82,255,0.18)] backdrop-blur-lg sm:px-8 md:gap-x-8 md:px-10"
       aria-label="Music player"
     >
       <div class="col-span-3 min-w-0 items-center md:items-start">
