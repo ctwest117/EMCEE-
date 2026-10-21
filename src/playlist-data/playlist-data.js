@@ -93,11 +93,12 @@ export class Playlist {
     song.isFavorite = true;
   }
 
-  static removeFromFavorites(node) {
-    if (!(node instanceof SongNode)) {
-      throw new TypeError("removeFromFavorite() expects a SongNode");
+  static removeFromFavorites(song) {
+    if (!(song instanceof Song)) {
+      throw new TypeError("removeFromFavorite() expects a Song");
     }
-    node.song.isFavorite = false;
+    song.isFavorite = false;
+    const node = Playlist.favorites.findById(song.id);
     Playlist.favorites.removeSong(node);
   }
 

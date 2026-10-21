@@ -1,4 +1,5 @@
 import { renderPlayerIcons } from "../assets/icons.js";
+import { Playlist } from "../playlist-data/playlist-data.js";
 
 // Convert audio time in seconds to the familiar minutes:seconds display.
 function formatTime(seconds) {
@@ -38,11 +39,28 @@ export function syncMiniPlayer(player) {
   const title = document.querySelector("#mini-song-title");
   const artist = document.querySelector("#mini-song-artist");
   const playPause = document.querySelector("#play-pause");
+  const favBtn = document.querySelector("#toggle-favorite");
   if (!title || !artist || !playPause) return;
 
   const song = player.currentNode?.song;
   title.textContent = song?.title ?? "Nothing playing";
   artist.textContent = song?.artist ?? "Choose a song to start listening";
+
+  if (favBtn) {
+    const isFavorite = Boolean(song?.isFavorite);
+
+    favBtn.setAttribute("aria-pressed", String(isFavorite));
+    favBtn.setAttribute(
+      "aria-label",
+      isFavorite ? "Remove from favorites" : "Add to favorites",
+    );
+    favBtn.title = isFavorite ? "Remove from favorites" : "Add to favorites";
+
+    favBtn.classList.toggle("text-fuchsia-400", isFavorite);
+    favBtn.classList.toggle("text-slate-400", !isFavorite);
+    favBtn.classList.toggle("hover:text-fuchsia-400", !isFavorite);
+    favBtn.querySelector("svg")?.classList.toggle("fill-current", isFavorite);
+  }
 
   const isPlaying = !player.audio.paused;
   const icon = isPlaying ? "pause" : "play";
@@ -66,7 +84,8 @@ export function miniPlayerListeners(player) {
   const playPause = document.querySelector("#play-pause");
   const previous = document.querySelector("#previous-track");
   const next = document.querySelector("#next-track");
-  if (!progress || !playPause || !previous || !next) return;
+  const toggleFav = document.querySelector("#toggle-favorite");
+  if (!progress || !playPause || !previous || !next || !toggleFav) return;
 
   playPause.addEventListener("click", () => player.play());
   previous.addEventListener("click", () => {
@@ -75,6 +94,17 @@ export function miniPlayerListeners(player) {
   });
   next.addEventListener("click", () => {
     player.skip();
+    syncMiniPlayer(player);
+  });
+
+  toggleFav.addEventListener("click", () => {
+    const node = player.currentNode;
+    if (!node) return;
+    if (node.song.isFavorite) {
+      Playlist.removeFromFavorites(node.song);
+    } else {
+      Playlist.addToFavorites(node.song);
+    }
     syncMiniPlayer(player);
   });
 

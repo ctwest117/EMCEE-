@@ -20,11 +20,6 @@ window.addEventListener("beforeunload", () => {
   Player.save();
 });
 
-// const bbArr = await searchSongs("Breaking Benjamin", 50);
-// bbArr.forEach((a) => {
-//   if (a.at(-1) === "song") Playlist.favorites.addSong(new Song(...a));
-// });
-
 Playlist.restore();
 Player.restore();
 syncMiniPlayer(Player);
