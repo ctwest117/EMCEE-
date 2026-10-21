@@ -6,7 +6,8 @@ export class MusicPlayer {
   constructor() {
     this.currentPlaylist = null;
     this.currentNode = null;
-    this.audio = document.getElementById("music");
+    this.audio = new Audio();
+    this.audio.preload = "metadata";
     this.keys = "PLAYBACK_KEYS";
     this.playbackOrder = null;
     this.shuffleHead = null;
@@ -17,13 +18,6 @@ export class MusicPlayer {
     this.isQueue = false;
     this.queue = []; //queue carries between playlists
     this.queuePrev = null; //the last normal song played beforre queue, it changes everytime a song that isnt a queue song is selected or played
-
-    // audio event listeners
-    this.audio.addEventListener("ended", () => {
-      if (this.loop !== "one") {
-        this.skip();
-      }
-    });
   }
 
   // save and restore playback
@@ -137,8 +131,12 @@ export class MusicPlayer {
   // play/pause, selectSong, nextSong, and prevSong methods
   play() {
     if (!this.currentNode) {
-      if (!this.currentPlaylist) return;
-      else this.currentNode = this.playbackOrder.at(0);
+      const firstNode = this.playbackOrder?.[0];
+      if (!firstNode) return;
+
+      this.currentNode = firstNode;
+      this.queuePrev = firstNode;
+      this.updateSrc();
     }
     if (this.isPlaying) {
       this.audio.pause();

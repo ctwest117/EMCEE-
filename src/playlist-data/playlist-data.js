@@ -131,7 +131,7 @@ export class Playlist {
       if (playlist.id === 100) {
         playlist.songs.forEach((songId) => {
           const song = Lib.songs.get(songId) ?? null;
-          if (song) if (song.isFavorite) Playlist.favorites.addSong(song);
+          if (song) if (song.isFavorite) Playlist.addToFavorites(song);
         });
         return true;
       }

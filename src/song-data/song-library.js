@@ -15,6 +15,15 @@ class Library {
     return true;
   }
 
+  //   search songs locally
+  search(query) {
+    return [...this.songs.values()].filter((song) =>
+      [song.title, song.artist, song.album].some((value) =>
+        value?.toLowerCase().includes(query.toLowerCase()),
+      ),
+    );
+  }
+
   // save and restore Library to and from localstorage
   save() {
     localStorage.setItem(
@@ -25,7 +34,10 @@ class Library {
 
   restore() {
     const tracks = localStorage.getItem("LIBRARY_KEYS") ?? null;
-    if (!tracks) return false;
+    if (!tracks) {
+      console.log("restore failed");
+      return false;
+    }
     JSON.parse(tracks).forEach((song) => {
       const newSong = new Song(
         song.id,
@@ -42,6 +54,7 @@ class Library {
       newSong.isFavorite = song.isFavorite;
       this.add(newSong);
     });
+    console.log("restore succeded");
     return true;
   }
 
