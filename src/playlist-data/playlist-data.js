@@ -59,6 +59,7 @@ export class Playlist {
     if (!removed) return false;
 
     if (!Playlist.isRestoring) Playlist.save();
+    playlist.iterate((node) => Lib.trackSongsDel(node.song, playlist));
     return true;
   }
 
@@ -199,6 +200,7 @@ export class Playlist {
       this.appendNode(node);
       this.size++;
       this.getNewDuration();
+      Lib.trackSongsAdd(node.song, this);
       if (!Playlist.isRestoring) Playlist.save();
       return node;
     }
@@ -221,6 +223,7 @@ export class Playlist {
 
     this.size++;
     this.getNewDuration();
+    Lib.trackSongsAdd(node.song, this);
     if (!Playlist.isRestoring) Playlist.save();
     return node;
   }
@@ -260,6 +263,7 @@ export class Playlist {
     }
 
     const song = node.song;
+    Lib.trackSongsDel(node.song, this);
     node.song = null;
     node.playlist = null;
     node.next = null;
@@ -274,6 +278,7 @@ export class Playlist {
     if (fullReset) {
       this.iterate((node) => {
         this.onSongRemoved?.(node);
+        Lib.trackSongsDel(node.song, this);
       });
     }
     this.head = null;

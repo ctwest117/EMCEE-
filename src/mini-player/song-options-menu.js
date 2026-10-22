@@ -20,33 +20,37 @@ export function createSongOptionsMenu() {
         type="button"
         role="menuitem"
         data-action="queue"
-        class="block w-full rounded-lg border-b border-blue-700 px-3 py-2 text-left text-sm text-white hover:bg-white/10 "
+        class="flex w-full items-center gap-2 rounded-lg border-b border-blue-700 px-3 py-2 text-left text-sm text-white hover:bg-white/10"
       >
-        <i data-lucide="FunnelPlus" aria-hidden="true" class="player-icon-button"></i> Add to queue 
+        <i data-lucide="FunnelPlus" aria-hidden="true" class="h-4 w-4 shrink-0"></i>
+        <span>Add to queue</span>
       </button>
       <button
         type="button"
         role="menuitem"
         data-action="queueView"
-        class="block w-full rounded-lg border-b border-blue-700 px-3 py-2 text-left text-sm text-white hover:bg-white/10"
+        class="flex w-full items-center gap-2 rounded-lg border-b border-blue-700 px-3 py-2 text-left text-sm text-white hover:bg-white/10"
       >
-        <i data-lucide="Funnel" aria-hidden="true" class="player-icon-button"></i> View Queue
+        <i data-lucide="Funnel" aria-hidden="true" class="h-4 w-4 shrink-0"></i>
+        <span>View Queue</span>
       </button>
       <button
         type="button"
         role="menuitem"
         data-action="add-to-playlist"
-        class="block w-full rounded-lg border-b border-blue-700 px-3 py-2 text-left text-sm text-white hover:bg-white/10"
+          class="flex w-full items-center gap-2 rounded-lg border-b border-blue-700 px-3 py-2 text-left text-sm text-white hover:bg-white/10"
       >
-        <i data-lucide="ListPlus" aria-hidden="true" class="player-icon-button"></i> Add to playlist 
+          <i data-lucide="ListPlus" aria-hidden="true" class="h-4 w-4 shrink-0"></i>
+          <span>Add to playlist</span>
       </button>
       <button
         type="button"
         role="menuitem"
         data-action="remove"
-        class="block w-full rounded-lg border-b border-blue-700 px-3 py-2 text-left text-sm text-white hover:bg-white/10"
+        class="flex w-full items-center gap-2 rounded-lg border-b border-blue-700 px-3 py-2 text-left text-sm text-white hover:bg-white/10"
       >
-        <i data-lucide="ListX" aria-hidden="true" class="player-icon-button"></i> Remove from playlist 
+        <i data-lucide="ListX" aria-hidden="true" class="h-4 w-4 shrink-0"></i>
+        <span>Remove from playlist</span>
       </button>
     </div>
   `;

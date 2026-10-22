@@ -6,12 +6,14 @@ import { Playlist } from "./playlist-data/playlist-data";
 import { MusicPlayer } from "./music-player-data/music-player-data";
 import { renderMini } from "./mini-player/mini-player-render";
 import { setupEventListeners } from "./eventListeners";
+import { renderHeader } from "./header-render";
 import {
   miniPlayerListeners,
   syncMiniPlayer,
 } from "./mini-player/mini-player-data";
 export const Player = new MusicPlayer();
 
+renderHeader();
 renderMini();
 miniPlayerListeners(Player);
 setupEventListeners(Player);

@@ -37,6 +37,7 @@ function updateProgress(player) {
 export function syncMiniPlayer(player) {
   const title = document.querySelector("#mini-song-title");
   const artist = document.querySelector("#mini-song-artist");
+  const cover = document.querySelector("#mini-song-cover");
   const playPause = document.querySelector("#play-pause");
   const favBtn = document.querySelector("#toggle-favorite");
   const songOptionsButton = document.querySelector("#player-more");
@@ -45,6 +46,13 @@ export function syncMiniPlayer(player) {
   const song = player.currentNode?.song;
   title.textContent = song?.title ?? "Nothing playing";
   artist.textContent = song?.artist ?? "Choose a song to start listening";
+
+  if (cover) {
+    if (song?.cover) cover.src = song.cover;
+    else cover.removeAttribute("src");
+    cover.alt = song ? `Album cover for ${song.album}` : "";
+    cover.classList.toggle("md:block", Boolean(song?.cover));
+  }
 
   if (songOptionsButton) {
     songOptionsButton.dataset.songId = song ? String(song.id) : "";

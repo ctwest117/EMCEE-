@@ -3,6 +3,9 @@ import { Song } from "./song-data.js";
 class Library {
   songs = new Map();
 
+  // keeps track of all the playlists a song is a member of
+  trackedSongs = new Map();
+
   // add and remove songs
   add(song) {
     if (this.songs.has(song.id)) return false;
@@ -15,13 +18,33 @@ class Library {
     return true;
   }
 
-  //   search songs locally
+  //   search and track songs locally
   search(query) {
     return [...this.songs.values()].filter((song) =>
       [song.title, song.artist, song.album].some((value) =>
         value?.toLowerCase().includes(query.toLowerCase()),
       ),
     );
+  }
+
+  trackSongsAdd(song, playlist) {
+    const ids = this.trackedSongs.get(song.id);
+
+    if (!ids) {
+      this.trackedSongs.set(song.id, [playlist.id]);
+    } else if (!ids.includes(playlist.id)) {
+      ids.push(playlist.id);
+    }
+  }
+
+  trackSongsDel(song, playlist) {
+    const ids = this.trackedSongs.get(song.id);
+    if (!ids) return;
+
+    const remainIds = ids.filter((id) => id !== playlist.id);
+
+    if (remainIds.length === 0) this.trackedSongs.delete(song.id);
+    else this.trackedSongs.set(song.id, remainIds);
   }
 
   // save and restore Library to and from localstorage
@@ -60,6 +83,7 @@ class Library {
 
   clear() {
     this.songs.clear();
+    this.trackedSongs.clear();
   }
 }
 

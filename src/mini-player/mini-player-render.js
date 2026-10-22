@@ -32,9 +32,16 @@ export function renderMini() {
         </div>
       </div>
 
-      <div class="min-w-0">
-        <p id="mini-song-title" class="truncate text-sm font-semibold sm:text-base">Nothing playing</p>
-        <p id="mini-song-artist" class="truncate text-xs text-slate-400 sm:text-sm">Choose a song to start listening</p>
+      <div class="flex min-w-0 items-center gap-3">
+        <img
+          id="mini-song-cover"
+          class=" h-12 w-12 shrink-0 rounded-lg object-cover "
+          alt=""
+        />
+        <div class="min-w-0">
+          <p id="mini-song-title" class="truncate text-sm font-semibold sm:text-base">Nothing playing</p>
+          <p id="mini-song-artist" class="truncate text-xs text-slate-400 sm:text-sm">Choose a song to start listening</p>
+        </div>
       </div>
 
       <div class="flex items-center justify-center gap-3 sm:gap-6">

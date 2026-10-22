@@ -88,6 +88,11 @@
     transform 150ms ease;
 }
 
+.header-icon-button {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
 .player-icon-button:hover {
   background: rgb(255 255 255 / 7%);
   filter: drop-shadow(0 0 8px currentColor);

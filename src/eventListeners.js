@@ -82,6 +82,15 @@ export function setupEventListeners(player) {
           closeSongOptions();
           break;
 
+        case "home":
+        case "search":
+          // Header navigation controls are placeholders for now.
+          break;
+
+        case "scroll-top":
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          break;
+
         default:
           break;
       }
