@@ -5,6 +5,7 @@ import { Lib } from "./song-data/song-library";
 import { Playlist } from "./playlist-data/playlist-data";
 import { MusicPlayer } from "./music-player-data/music-player-data";
 import { renderMini } from "./mini-player/mini-player-render";
+import { setupEventListeners } from "./eventListeners";
 import {
   miniPlayerListeners,
   syncMiniPlayer,
@@ -13,6 +14,7 @@ export const Player = new MusicPlayer();
 
 renderMini();
 miniPlayerListeners(Player);
+setupEventListeners(Player);
 
 function saveAppState() {
   Playlist.save();

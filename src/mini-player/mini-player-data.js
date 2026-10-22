@@ -1,5 +1,4 @@
 import { renderPlayerIcons } from "../assets/icons.js";
-import { Playlist } from "../playlist-data/playlist-data.js";
 
 // Convert audio time in seconds to the familiar minutes:seconds display.
 function formatTime(seconds) {
@@ -40,11 +39,19 @@ export function syncMiniPlayer(player) {
   const artist = document.querySelector("#mini-song-artist");
   const playPause = document.querySelector("#play-pause");
   const favBtn = document.querySelector("#toggle-favorite");
+  const songOptionsButton = document.querySelector("#player-more");
   if (!title || !artist || !playPause) return;
 
   const song = player.currentNode?.song;
   title.textContent = song?.title ?? "Nothing playing";
   artist.textContent = song?.artist ?? "Choose a song to start listening";
+
+  if (songOptionsButton) {
+    songOptionsButton.dataset.songId = song ? String(song.id) : "";
+    songOptionsButton.dataset.playId = player.currentPlaylist
+      ? String(player.currentPlaylist.id)
+      : "";
+  }
 
   if (favBtn) {
     const isFavorite = Boolean(song?.isFavorite);
@@ -81,11 +88,7 @@ export function syncMiniPlayer(player) {
 // Connect the rendered controls and audio events to this MusicPlayer instance.
 export function miniPlayerListeners(player) {
   const progress = document.querySelector("#progress");
-  const playPause = document.querySelector("#play-pause");
-  const previous = document.querySelector("#previous-track");
-  const next = document.querySelector("#next-track");
-  const toggleFav = document.querySelector("#toggle-favorite");
-  if (!progress || !playPause || !previous || !next || !toggleFav) return;
+  if (!progress) return;
 
   // Persist playback progress every few seconds, and exactly when it pauses
   // or the user finishes seeking. Avoid writing to storage on every timeupdate.
@@ -105,27 +108,6 @@ export function miniPlayerListeners(player) {
   });
   progress.addEventListener("change", () => {
     if (!player.isRestoringPlayback) player.save();
-  });
-
-  playPause.addEventListener("click", () => player.play());
-  previous.addEventListener("click", () => {
-    player.prev();
-    syncMiniPlayer(player);
-  });
-  next.addEventListener("click", () => {
-    player.skip();
-    syncMiniPlayer(player);
-  });
-
-  toggleFav.addEventListener("click", () => {
-    const node = player.currentNode;
-    if (!node) return;
-    if (node.song.isFavorite) {
-      Playlist.removeFromFavorites(node.song);
-    } else {
-      Playlist.addToFavorites(node.song);
-    }
-    syncMiniPlayer(player);
   });
 
   // The range value is a fraction of the song duration, so convert it back
