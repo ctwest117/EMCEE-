@@ -54,7 +54,7 @@ export function renderPlaylist(playlist, player) {
         <summary
           aria-label="Sort playlist"
           title="Sort playlist"
-          class="player-icon-button cursor-pointer list-none text-cyan-400 hover:text-cyan-200"
+          class="player-icon-button cursor-pointer list-none text-cyan-400 hover:text-cyan-200 [&::-webkit-details-marker]:hidden"
         ><i data-lucide="list-chevrons-up-down" aria-hidden="true"></i></summary>
         <div
           role="menu"

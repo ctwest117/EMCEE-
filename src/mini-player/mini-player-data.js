@@ -2,6 +2,7 @@ import { renderPlayerIcons } from "../assets/icons.js";
 import { refreshRenderedSongs } from "../page-rendering/list-render.js";
 
 let lastSyncedSongId = null;
+let progressFrame = null;
 
 // Convert audio time in seconds to the familiar minutes:seconds display.
 function formatTime(seconds) {
@@ -14,11 +15,11 @@ function formatTime(seconds) {
 }
 
 // Keep the slider, elapsed time, and total time in sync with the audio.
-function updateProgress(player) {
+function updateProgress(player, updateTimeLabels = true) {
   const progress = document.querySelector("#progress");
   const currentTime = document.querySelector("#current-time");
   const duration = document.querySelector("#duration");
-  if (!progress || !currentTime || !duration) return;
+  if (!progress) return;
 
   const total = player.audio.duration;
   const canSeek = Number.isFinite(total) && total > 0;
@@ -32,8 +33,31 @@ function updateProgress(player) {
     "--progress",
     `${canSeek ? (player.audio.currentTime / total) * 100 : 0}%`,
   );
-  currentTime.textContent = formatTime(player.audio.currentTime);
-  duration.textContent = formatTime(total);
+  if (updateTimeLabels && currentTime && duration) {
+    currentTime.textContent = formatTime(player.audio.currentTime);
+    duration.textContent = formatTime(total);
+  }
+}
+
+function animateProgress(player) {
+  progressFrame = null;
+  if (player.audio.paused || player.audio.ended) return;
+
+  updateProgress(player, false);
+  progressFrame = requestAnimationFrame(() => animateProgress(player));
+}
+
+function startProgressAnimation(player) {
+  if (progressFrame === null) {
+    progressFrame = requestAnimationFrame(() => animateProgress(player));
+  }
+}
+
+function stopProgressAnimation() {
+  if (progressFrame === null) return;
+
+  cancelAnimationFrame(progressFrame);
+  progressFrame = null;
 }
 
 // Copy the current player state into the visible labels and controls.
@@ -170,6 +194,11 @@ export function miniPlayerListeners(player) {
     player.audio.currentTime = (Number(progress.value) / 1000) * duration;
     updateProgress(player);
   });
+
+  // Keep the slider moving smoothly while audio plays; stop drawing when paused.
+  player.audio.addEventListener("play", () => startProgressAnimation(player));
+  player.audio.addEventListener("pause", stopProgressAnimation);
+  player.audio.addEventListener("ended", stopProgressAnimation);
 
   // When a track ends, advance unless repeat-one is active.
   player.audio.addEventListener("ended", () => {

@@ -116,6 +116,26 @@
     transform 150ms ease;
 }
 
+/* Keep the mini-player's four right-side controls compact on narrow screens. */
+.mini-player-side-controls .player-icon-button {
+  width: 2rem;
+  height: 2rem;
+}
+
+@media (min-width: 640px) {
+  .mini-player-side-controls .player-icon-button {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .mini-player-side-controls .player-icon-button {
+    width: 3rem;
+    height: 3rem;
+  }
+}
+
 .header-icon-button {
   width: 2.5rem;
   height: 2.5rem;

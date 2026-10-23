@@ -173,7 +173,8 @@ export function setupEventListeners(player) {
         }
 
         case "rename-playlist":
-          // Rename is not wired up yet.
+        case "change-playlist-cover":
+          // These playlist actions are not wired up yet.
           closePlaylistOptions();
           break;
 

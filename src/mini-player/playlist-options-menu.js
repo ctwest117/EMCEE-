@@ -33,6 +33,16 @@ export function createPlaylistOptionsMenu() {
       <button
         type="button"
         role="menuitem"
+        data-action="change-playlist-cover"
+        data-play-id=""
+        class="flex w-full items-center gap-2 rounded-lg border-b border-blue-700 px-3 py-2 text-left text-sm hover:bg-white/10"
+      >
+        <i data-lucide="disc-3" aria-hidden="true" class="h-4 w-4 shrink-0"></i>
+        <span>Change Cover</span>
+      </button>
+      <button
+        type="button"
+        role="menuitem"
         data-action="rename-playlist"
         data-play-id=""
         class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm hover:bg-white/10"

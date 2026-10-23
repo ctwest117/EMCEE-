@@ -15,7 +15,7 @@ export function renderMini() {
   // the full width above them.
   miniPlayer.innerHTML = /* html */ `
     <section
-      class="relative grid w-full min-w-0 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-5 gap-y-0 rounded-t-4xl border-t border-blue-600 bg-slate-950/90 px-5 py-4 text-white shadow-[0_0_24px_rgba(0,82,255,0.18)] backdrop-blur-lg sm:px-8 md:gap-x-8 md:px-10"
+      class="relative grid w-full min-w-0 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-1 gap-y-0 rounded-t-4xl border-t border-blue-600 bg-slate-950/90 px-2 py-4 text-white shadow-[0_0_24px_rgba(0,82,255,0.18)] backdrop-blur-lg sm:gap-x-2 sm:px-3 md:gap-x-8 md:px-10"
       aria-label="Music player"
     >
       <div class="col-span-3 min-w-0 items-center md:items-start">
@@ -35,10 +35,10 @@ export function renderMini() {
         </div>
       </div>
 
-      <div class="flex min-w-0 items-center gap-3">
+      <div class="flex min-w-0 items-center gap-2 md:gap-3">
         <img
           id="mini-song-cover"
-          class=" h-12 w-12 shrink-0 rounded-lg object-cover "
+          class="h-8 w-8 shrink-0 rounded-lg object-cover sm:h-10 sm:w-10 md:h-12 md:w-12"
           alt=""
         />
         <div class="min-w-0">
@@ -47,7 +47,7 @@ export function renderMini() {
         </div>
       </div>
 
-      <div class="flex items-center justify-center gap-3 sm:gap-6">
+      <div class="flex items-center justify-self-end gap-1 sm:gap-2 md:gap-6">
         <button
           id="previous-track"
           data-action="previous-track"
@@ -74,8 +74,8 @@ export function renderMini() {
         ><i data-lucide="skip-forward" aria-hidden="true"></i></button>
       </div>
 
-      <div class="flex items-center gap-2 justify-self-end">
-        <div class="flex items-center gap-1">
+      <div class="mini-player-side-controls flex w-full min-w-0 items-center justify-self-stretch justify-between gap-1 md:gap-2">
+        <div class="flex shrink-0 items-center gap-0 sm:gap-1">
           <button
             id="toggle-loop"
             data-action="toggle-loop"
@@ -96,27 +96,27 @@ export function renderMini() {
             class="player-icon-button text-slate-400 hover:text-cyan-200"
           ><i data-lucide="shuffle" aria-hidden="true"></i></button>
         </div>
-        <div class="flex items-center gap-1">
-        <button
-          id="toggle-favorite"
-          data-action="toggle-favorite"
-          type="button"
-          class="player-icon-button text-slate-400 hover:text-fuchsia-400"
-          aria-label="Add to favorites"
-          title="Add to favorites"
-        ><i data-lucide="heart" aria-hidden="true"></i></button>
-        <button
-          id="player-more"
-          type="button"
-          data-action="song-options"
-          data-song-id=""
-          data-play-id=""
-          aria-label="Song options"
-          aria-controls="song-options-details"
-          aria-expanded="false"
-          title="Song options"
-          class="player-icon-button text-cyan-400 hover:text-cyan-200"
-        ><i data-lucide="ellipsis-vertical" aria-hidden="true"></i></button>
+        <div class="flex shrink-0 items-center gap-0 sm:gap-1">
+          <button
+            id="toggle-favorite"
+            data-action="toggle-favorite"
+            type="button"
+            class="player-icon-button text-slate-400 hover:text-fuchsia-400"
+            aria-label="Add to favorites"
+            title="Add to favorites"
+          ><i data-lucide="heart" aria-hidden="true"></i></button>
+          <button
+            id="player-more"
+            type="button"
+            data-action="song-options"
+            data-song-id=""
+            data-play-id=""
+            aria-label="Song options"
+            aria-controls="song-options-details"
+            aria-expanded="false"
+            title="Song options"
+            class="player-icon-button text-cyan-400 hover:text-cyan-200"
+          ><i data-lucide="ellipsis-vertical" aria-hidden="true"></i></button>
         </div>
       </div>
     </section>
