@@ -26,6 +26,34 @@
   color: transparent;
 }
 
+#app {
+  height: calc(100vh - var(--mini-player-height, 9rem));
+  height: calc(100dvh - var(--mini-player-height, 9rem));
+  overflow-y: overlay;
+  scrollbar-width: thin;
+  scrollbar-color: #0891b2 transparent;
+}
+
+#app::-webkit-scrollbar {
+  width: 6px;
+}
+
+#app::-webkit-scrollbar-track,
+#app::-webkit-scrollbar-button {
+  background: transparent;
+}
+
+#app::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 50%;
+  background: rgb(8 145 178 / 75%);
+  background-clip: padding-box;
+}
+
+#app::-webkit-scrollbar-thumb:hover {
+  background: #22d3ee;
+}
+
 #progress {
   --progress: 0%;
   height: 16px;

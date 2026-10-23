@@ -47,7 +47,9 @@ export class MusicPlayer {
 
       const index = res.songPos;
       const node =
-        Number.isInteger(index) && index >= 0 ? this.playbackOrder[index] : null;
+        Number.isInteger(index) && index >= 0
+          ? this.playbackOrder[index]
+          : null;
 
       if (node) this.selectSong(node);
 
@@ -183,6 +185,7 @@ export class MusicPlayer {
       }
     }
     this.updateSrc();
+    if (!this.isPlaying) this.play();
   }
 
   prev() {
@@ -212,6 +215,7 @@ export class MusicPlayer {
     this.queuePrev = this.currentNode;
 
     this.updateSrc();
+    if (!this.isPlaying) this.play();
   }
   //   playlist select controls
   selectPlaylist(playlist) {

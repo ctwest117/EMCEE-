@@ -6,17 +6,22 @@ import { Playlist } from "./playlist-data/playlist-data";
 import { MusicPlayer } from "./music-player-data/music-player-data";
 import { renderMini } from "./mini-player/mini-player-render";
 import { setupEventListeners } from "./eventListeners";
-import { renderHeader } from "./header-render";
+import { renderHeader } from "./page-rendering/header-render";
 import {
   miniPlayerListeners,
   syncMiniPlayer,
 } from "./mini-player/mini-player-data";
+import {
+  refreshRenderedSongs,
+  renderSongs,
+} from "./page-rendering/list-render";
 export const Player = new MusicPlayer();
 
 renderHeader();
 renderMini();
 miniPlayerListeners(Player);
 setupEventListeners(Player);
+document.addEventListener("playlistchange", refreshRenderedSongs);
 
 function saveAppState() {
   Playlist.save();
@@ -36,6 +41,10 @@ syncMiniPlayer(Player);
 // Persist the fully restored startup state once, after restore has finished.
 Playlist.save();
 
+const initialPlaylist = Player.currentPlaylist ?? Playlist.favorites;
+renderSongs(initialPlaylist, Player);
+
+window.renderSongs = renderSongs;
 window.searchSongs = searchSongs;
 window.Lib = Lib;
 window.Song = Song;

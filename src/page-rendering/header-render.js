@@ -1,10 +1,9 @@
-import { renderPlayerIcons } from "./assets/icons.js";
+import { renderPlayerIcons } from "../assets/icons.js";
 
 export function renderHeader() {
-  const app = document.querySelector("#app");
-  if (!app) return;
+  const header = document.querySelector("#app-header");
+  if (!header) return;
 
-  const header = document.createElement("header");
   header.className =
     "relative flex h-14 w-full items-center justify-center border-b border-blue-800 bg-slate-950/80 text-white";
   header.innerHTML = /* html */ `
@@ -43,6 +42,5 @@ export function renderHeader() {
     ><i data-lucide="chevron-up" aria-hidden="true"></i></button>
   `;
 
-  app.prepend(header);
   renderPlayerIcons();
 }

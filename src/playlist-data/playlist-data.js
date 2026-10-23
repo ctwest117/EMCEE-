@@ -1,6 +1,12 @@
 import { Song } from "../song-data/song-data.js";
 import { Lib } from "../song-data/song-library.js";
 
+function notifyPlaylistChange(playlist, removed = false) {
+  document.dispatchEvent(
+    new CustomEvent("playlistchange", { detail: { playlist, removed } }),
+  );
+}
+
 // holds song inside playlist
 export class SongNode {
   constructor(song) {
@@ -60,6 +66,7 @@ export class Playlist {
 
     if (!Playlist.isRestoring) Playlist.save();
     playlist.iterate((node) => Lib.trackSongsDel(node.song, playlist));
+    notifyPlaylistChange(playlist, true);
     return true;
   }
 
@@ -84,6 +91,15 @@ export class Playlist {
     this.onSongRemoved = null;
 
     if (addToPlaylists) Playlist.addPlaylist(this);
+  }
+  //  Search results playlist
+  static searchResults(songs, playId = 0) {
+    const results = new Playlist("search-results", "none", playId, false);
+    songs.forEach((song) => {
+      results.addSong(song);
+      Lib.trackSongsDel(song, results);
+    });
+    return results;
   }
 
   // favorites playlist
@@ -201,6 +217,7 @@ export class Playlist {
       this.size++;
       this.getNewDuration();
       Lib.trackSongsAdd(node.song, this);
+      notifyPlaylistChange(this);
       if (!Playlist.isRestoring) Playlist.save();
       return node;
     }
@@ -224,6 +241,7 @@ export class Playlist {
     this.size++;
     this.getNewDuration();
     Lib.trackSongsAdd(node.song, this);
+    notifyPlaylistChange(this);
     if (!Playlist.isRestoring) Playlist.save();
     return node;
   }
@@ -270,6 +288,7 @@ export class Playlist {
     node.prev = null;
     this.size--;
     this.getNewDuration();
+    notifyPlaylistChange(this);
     if (!Playlist.isRestoring) Playlist.save();
     return song;
   }
@@ -288,6 +307,7 @@ export class Playlist {
       this.nextOrder = 0;
     }
     this.duration = 0;
+    if (fullReset) notifyPlaylistChange(this);
     if (fullReset && !Playlist.isRestoring) Playlist.save();
   }
 
@@ -330,6 +350,7 @@ export class Playlist {
       this.size++;
     });
     this.getNewDuration();
+    notifyPlaylistChange(this);
   }
 
   //   get duration
@@ -474,6 +495,7 @@ export class Playlist {
       node.next = null;
       this.tail = node;
       this.sortMethod = "none";
+      notifyPlaylistChange(this);
       if (!Playlist.isRestoring) Playlist.save();
       return node;
     }
@@ -492,6 +514,7 @@ export class Playlist {
 
     this.sortMethod = "none";
     this.head.prev = null;
+    notifyPlaylistChange(this);
     if (!Playlist.isRestoring) Playlist.save();
     return node;
   }

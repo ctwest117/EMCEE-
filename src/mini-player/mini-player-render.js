@@ -1,6 +1,8 @@
 import { renderPlayerIcons } from "../assets/icons.js";
 import { createSongOptionsMenu } from "./song-options-menu.js";
 
+let miniPlayerResizeObserver;
+
 // Build the mini-player's HTML. Keeping this separate from MusicPlayer lets
 // the player manage audio while this module handles only the interface.
 export function renderMini() {
@@ -12,7 +14,7 @@ export function renderMini() {
   // the full width above them.
   miniPlayer.innerHTML = /* html */ `
     <section
-      class="relative grid min-w-screen inset-x-0 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-5 gap-y-0 rounded-t-4xl border-t border-blue-600 bg-slate-950/90 px-5 py-4 text-white shadow-[0_0_24px_rgba(0,82,255,0.18)] backdrop-blur-lg sm:px-8 md:gap-x-8 md:px-10"
+      class="relative grid w-full min-w-0 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-5 gap-y-0 rounded-t-4xl border-t border-blue-600 bg-slate-950/90 px-5 py-4 text-white shadow-[0_0_24px_rgba(0,82,255,0.18)] backdrop-blur-lg sm:px-8 md:gap-x-8 md:px-10"
       aria-label="Music player"
     >
       <div class="col-span-3 min-w-0 items-center md:items-start">
@@ -99,6 +101,17 @@ export function renderMini() {
 
   const optionsContainer = miniPlayer.querySelector("#player-song-options");
   optionsContainer.append(createSongOptionsMenu());
+
+  const updateMiniPlayerHeight = () => {
+    document.documentElement.style.setProperty(
+      "--mini-player-height",
+      `${miniPlayer.offsetHeight}px`,
+    );
+  };
+  updateMiniPlayerHeight();
+  miniPlayerResizeObserver?.disconnect();
+  miniPlayerResizeObserver = new ResizeObserver(updateMiniPlayerHeight);
+  miniPlayerResizeObserver.observe(miniPlayer);
 
   // Lucide replaces each data-lucide placeholder with its SVG icon.
   renderPlayerIcons();

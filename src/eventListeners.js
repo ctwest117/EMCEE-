@@ -1,6 +1,7 @@
 import { Playlist } from "./playlist-data/playlist-data.js";
 import { Lib } from "./song-data/song-library.js";
 import { syncMiniPlayer } from "./mini-player/mini-player-data.js";
+import { refreshRenderedSongs } from "./page-rendering/list-render.js";
 
 function closeSongOptions() {
   const details = document.querySelector("#song-options-details");
@@ -31,7 +32,9 @@ export function setupEventListeners(player) {
           details.dataset.playId = button.dataset.playId ?? "";
           details.open = !details.open;
           document
-            .querySelectorAll('[data-action="song-options"][aria-expanded="true"]')
+            .querySelectorAll(
+              '[data-action="song-options"][aria-expanded="true"]',
+            )
             .forEach((openButton) =>
               openButton.setAttribute("aria-expanded", "false"),
             );
@@ -55,15 +58,18 @@ export function setupEventListeners(player) {
           break;
 
         case "toggle-favorite": {
-          const node = player.currentNode;
-          if (!node) break;
+          const song = button.dataset.songId
+            ? Lib.songs.get(Number(button.dataset.songId))
+            : player.currentNode?.song;
+          if (!song) break;
 
-          if (node.song.isFavorite) {
-            Playlist.removeFromFavorites(node.song);
+          if (song.isFavorite) {
+            Playlist.removeFromFavorites(song);
           } else {
-            Playlist.addToFavorites(node.song);
+            Playlist.addToFavorites(song);
           }
           syncMiniPlayer(player);
+          refreshRenderedSongs();
           break;
         }
 
@@ -88,7 +94,9 @@ export function setupEventListeners(player) {
           break;
 
         case "scroll-top":
-          window.scrollTo({ top: 0, behavior: "smooth" });
+          document
+            .querySelector("#app")
+            ?.scrollTo({ top: 0, behavior: "smooth" });
           break;
 
         default:
@@ -96,6 +104,17 @@ export function setupEventListeners(player) {
       }
     } else {
       closeSongOptions();
+    }
+
+    const songRow = event.target.closest('li[data-action="select-song"]');
+    if (songRow && !button) {
+      const songNode = songRow.songNode;
+
+      if (songNode) {
+        player.selectSong(songNode);
+        if (!player.isPlaying) player.play();
+        syncMiniPlayer(player);
+      }
     }
   });
 }

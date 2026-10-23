@@ -1,4 +1,7 @@
 import { renderPlayerIcons } from "../assets/icons.js";
+import { refreshRenderedSongs } from "../page-rendering/list-render.js";
+
+let lastSyncedSongId = null;
 
 // Convert audio time in seconds to the familiar minutes:seconds display.
 function formatTime(seconds) {
@@ -46,6 +49,12 @@ export function syncMiniPlayer(player) {
   const song = player.currentNode?.song;
   title.textContent = song?.title ?? "Nothing playing";
   artist.textContent = song?.artist ?? "Choose a song to start listening";
+
+  const songId = song?.id ?? null;
+  if (songId !== lastSyncedSongId) {
+    lastSyncedSongId = songId;
+    refreshRenderedSongs();
+  }
 
   if (cover) {
     if (song?.cover) cover.src = song.cover;
