@@ -78,6 +78,7 @@ export function renderSongs(playlist, player, query = "") {
               data-action="song-options"
               data-song-id="${songId}"
               data-play-id="${playId}"
+              data-search-results="${Boolean(playlist.isSearchResults)}"
               aria-label="Options for ${title}"
               aria-controls="song-options-details"
               aria-expanded="false"

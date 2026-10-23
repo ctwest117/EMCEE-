@@ -43,8 +43,12 @@ class Library {
 
     const remainIds = ids.filter((id) => id !== playlist.id);
 
-    if (remainIds.length === 0) this.trackedSongs.delete(song.id);
-    else this.trackedSongs.set(song.id, remainIds);
+    if (remainIds.length === 0) {
+      this.trackedSongs.delete(song.id);
+      this.del(song);
+    } else {
+      this.trackedSongs.set(song.id, remainIds);
+    }
   }
 
   // save and restore Library to and from localstorage

@@ -25,6 +25,8 @@ import {
   Globe,
   ListPlus,
   ListX,
+  Plus,
+  Pencil,
 } from "lucide";
 
 export function renderPlayerIcons() {
@@ -51,6 +53,8 @@ export function renderPlayerIcons() {
       ListMusic,
       ListPlus,
       ListX,
+      Plus,
+      Pencil,
       X,
       Funnel,
       FunnelPlus,

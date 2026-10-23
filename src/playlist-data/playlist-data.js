@@ -7,6 +7,9 @@ function notifyPlaylistChange(playlist, removed = false) {
   );
 }
 
+const defaultCover =
+  "https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=500&h=500&q=80";
+
 // holds song inside playlist
 export class SongNode {
   constructor(song) {
@@ -33,6 +36,14 @@ export class Playlist {
   //   adding and removing playlists to the manager array
   static myPlaylists = new Map();
   static isRestoring = false;
+  static sortMethods = [
+    "none",
+    "default",
+    "reverse",
+    "alpha",
+    "album",
+    "artist",
+  ];
 
   static findPlaylist(nameOrId) {
     if (Playlist.myPlaylists.get(nameOrId)) {
@@ -75,7 +86,7 @@ export class Playlist {
 
   constructor(
     name,
-    cover = "../assets/images/default-cover.png",
+    cover = defaultCover,
     id = Playlist.nextId++,
     addToPlaylists = true,
   ) {
@@ -88,6 +99,7 @@ export class Playlist {
     this.nextOrder = 0;
     this.duration = 0;
     this.sortMethod = "default";
+    this.isSearchResults = false;
     this.onSongRemoved = null;
 
     if (addToPlaylists) Playlist.addPlaylist(this);
@@ -95,10 +107,12 @@ export class Playlist {
   //  Search results playlist
   static searchResults(songs, playId = 0) {
     const results = new Playlist("search-results", "none", playId, false);
+    results.isSearchResults = true;
     songs.forEach((song) => {
       results.addSong(song);
       Lib.trackSongsDel(song, results);
     });
+    Lib.save();
     return results;
   }
 
@@ -362,15 +376,7 @@ export class Playlist {
 
   //  sorting, finding & moving songs
   sortBy(method = "default") {
-    const sortMethods = [
-      "none",
-      "default",
-      "reverse",
-      "alpha",
-      "album",
-      "artist",
-    ];
-    if (!sortMethods.includes(method)) {
+    if (!Playlist.sortMethods.includes(method)) {
       throw new TypeError("Method not supported");
     }
     this.sortMethod = method;

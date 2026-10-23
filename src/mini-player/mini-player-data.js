@@ -43,6 +43,8 @@ export function syncMiniPlayer(player) {
   const cover = document.querySelector("#mini-song-cover");
   const playPause = document.querySelector("#play-pause");
   const favBtn = document.querySelector("#toggle-favorite");
+  const loopButton = document.querySelector("#toggle-loop");
+  const shuffleButton = document.querySelector("#toggle-shuffle");
   const songOptionsButton = document.querySelector("#player-more");
   if (!title || !artist || !playPause) return;
 
@@ -84,6 +86,39 @@ export function syncMiniPlayer(player) {
     favBtn.classList.toggle("text-slate-400", !isFavorite);
     favBtn.classList.toggle("hover:text-fuchsia-400", !isFavorite);
     favBtn.querySelector("svg")?.classList.toggle("fill-current", isFavorite);
+  }
+
+  if (loopButton) {
+    const loopModes = {
+      off: { icon: "repeat-off", label: "Loop off" },
+      all: { icon: "repeat", label: "Loop all" },
+      one: { icon: "repeat-1", label: "Loop one" },
+    };
+    const mode = loopModes[player.loop] ?? loopModes.off;
+
+    loopButton.setAttribute("aria-label", mode.label);
+    loopButton.title = mode.label;
+    loopButton.setAttribute("aria-pressed", String(player.loop !== "off"));
+    loopButton.classList.toggle("text-cyan-300", player.loop !== "off");
+    loopButton.classList.toggle("text-slate-400", player.loop === "off");
+
+    if (loopButton.dataset.icon !== mode.icon) {
+      loopButton.dataset.icon = mode.icon;
+      loopButton.innerHTML = `<i data-lucide="${mode.icon}" aria-hidden="true"></i>`;
+      renderPlayerIcons();
+    }
+  }
+
+  if (shuffleButton) {
+    const isShuffled = Boolean(player.isShuffled);
+    shuffleButton.setAttribute("aria-pressed", String(isShuffled));
+    shuffleButton.setAttribute(
+      "aria-label",
+      isShuffled ? "Turn shuffle off" : "Turn shuffle on",
+    );
+    shuffleButton.title = isShuffled ? "Turn shuffle off" : "Turn shuffle on";
+    shuffleButton.classList.toggle("text-cyan-300", isShuffled);
+    shuffleButton.classList.toggle("text-slate-400", !isShuffled);
   }
 
   const isPlaying = !player.audio.paused;

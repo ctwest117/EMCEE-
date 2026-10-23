@@ -15,6 +15,7 @@ import {
   refreshRenderedSongs,
   renderSongs,
 } from "./page-rendering/list-render";
+import { renderHome } from "./page-rendering/home-controls";
 export const Player = new MusicPlayer();
 
 renderHeader();
@@ -41,8 +42,7 @@ syncMiniPlayer(Player);
 // Persist the fully restored startup state once, after restore has finished.
 Playlist.save();
 
-const initialPlaylist = Player.currentPlaylist ?? Playlist.favorites;
-renderSongs(initialPlaylist, Player);
+renderHome(Player);
 
 window.renderSongs = renderSongs;
 window.searchSongs = searchSongs;

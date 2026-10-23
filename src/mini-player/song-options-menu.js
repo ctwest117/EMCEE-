@@ -1,9 +1,4 @@
-// The mini-player owns one shared song-options menu. Ellipsis buttons elsewhere
-
-import { renderPlayerIcons } from "../assets/icons";
-import { Lib } from "../song-data/song-library";
-
-// update this menu's song and playlist IDs before opening it.
+// One shared menu is positioned beside whichever song-options button opens it.
 export function createSongOptionsMenu() {
   const details = document.createElement("details");
   details.id = "song-options-details";
@@ -14,7 +9,8 @@ export function createSongOptionsMenu() {
     <summary class="sr-only">Song options</summary>
     <div
       role="menu"
-      class="absolute bottom-[105%] right-1 z-50 min-w-48 rounded-xl border border-blue-700 bg-slate-950 p-2 shadow-xl"
+      data-options-panel
+      class="fixed left-0 top-0 z-[60] max-h-[calc(100dvh-1rem)] max-w-[calc(100vw-1rem)] min-w-48 overflow-y-auto rounded-xl border border-blue-700 bg-slate-950 p-2 shadow-xl"
     >
       <button
         type="button"
@@ -54,6 +50,5 @@ export function createSongOptionsMenu() {
       </button>
     </div>
   `;
-  renderPlayerIcons;
   return details;
 }

@@ -1,5 +1,6 @@
 import { renderPlayerIcons } from "../assets/icons.js";
 import { createSongOptionsMenu } from "./song-options-menu.js";
+import { createPlaylistOptionsMenu } from "./playlist-options-menu.js";
 
 let miniPlayerResizeObserver;
 
@@ -74,6 +75,28 @@ export function renderMini() {
       </div>
 
       <div class="flex items-center gap-2 justify-self-end">
+        <div class="flex items-center gap-1">
+          <button
+            id="toggle-loop"
+            data-action="toggle-loop"
+            data-icon="repeat-off"
+            type="button"
+            aria-label="Loop off"
+            aria-pressed="false"
+            title="Loop off"
+            class="player-icon-button text-slate-400 hover:text-cyan-200"
+          ><i data-lucide="repeat-off" aria-hidden="true"></i></button>
+          <button
+            id="toggle-shuffle"
+            data-action="toggle-shuffle"
+            type="button"
+            aria-label="Turn shuffle on"
+            aria-pressed="false"
+            title="Turn shuffle on"
+            class="player-icon-button text-slate-400 hover:text-cyan-200"
+          ><i data-lucide="shuffle" aria-hidden="true"></i></button>
+        </div>
+        <div class="flex items-center gap-1">
         <button
           id="toggle-favorite"
           data-action="toggle-favorite"
@@ -94,13 +117,17 @@ export function renderMini() {
           title="Song options"
           class="player-icon-button text-cyan-400 hover:text-cyan-200"
         ><i data-lucide="ellipsis-vertical" aria-hidden="true"></i></button>
-        <div id="player-song-options"></div>
+        </div>
       </div>
     </section>
   `;
 
-  const optionsContainer = miniPlayer.querySelector("#player-song-options");
-  optionsContainer.append(createSongOptionsMenu());
+  // Keep shared menus outside the fixed player so they can sit beside any trigger.
+  document.querySelector("#shared-options-menus")?.remove();
+  const optionsContainer = document.createElement("div");
+  optionsContainer.id = "shared-options-menus";
+  optionsContainer.append(createSongOptionsMenu(), createPlaylistOptionsMenu());
+  document.body.append(optionsContainer);
 
   const updateMiniPlayerHeight = () => {
     document.documentElement.style.setProperty(
