@@ -64,6 +64,22 @@ export class Playlist {
     if (Playlist.keys && !Playlist.isRestoring) Playlist.save();
   }
 
+  static createPlaylist(name) {
+    const cleanName = String(name ?? "").trim();
+    if (!cleanName) {
+      return { playlist: null, error: "Enter a playlist name." };
+    }
+
+    const duplicate = [...Playlist.myPlaylists.values()].some(
+      (playlist) => playlist.name.trim().toLowerCase() === cleanName.toLowerCase(),
+    );
+    if (duplicate) {
+      return { playlist: null, error: "A playlist with that name already exists." };
+    }
+
+    return { playlist: new Playlist(cleanName), error: "" };
+  }
+
   static removePlaylist(playlist) {
     if (!(playlist instanceof Playlist)) {
       throw new TypeError("removePlaylist() expects a Playlist instance");

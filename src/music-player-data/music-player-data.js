@@ -29,6 +29,8 @@ export class MusicPlayer {
         ? this.currentPlaylist.posOf(this.currentNode)
         : -1,
       time: this.audio.currentTime,
+      loop: this.loop,
+      isShuffled: this.isShuffled,
     };
     localStorage.setItem(this.keys, JSON.stringify(save));
   }
@@ -39,6 +41,10 @@ export class MusicPlayer {
     const res = JSON.parse(save);
     const playlist =
       Playlist.myPlaylists.get(res.listId ?? 100) ?? Playlist.favorites;
+
+    const loopModes = ["off", "all", "one"];
+    this.setLoopMode(loopModes.includes(res.loop) ? res.loop : "off");
+    this.isShuffled = res.isShuffled === true;
 
     this.isRestoringPlayback = true;
     try {

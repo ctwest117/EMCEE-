@@ -27,7 +27,7 @@ export function renderPlaylist(playlist, player) {
           data-action="sort-playlist"
           data-sort-method="${method}"
           data-play-id="${playId}"
-          class="block w-full rounded-lg px-3 py-2 text-left text-sm text-white hover:bg-white/10"
+          class="block w-full rounded-lg px-3 py-2 border-b border-blue-700 text-left text-sm text-white hover:bg-white/10"
         >${sortLabels[method]}</button>
       `,
     )
@@ -40,7 +40,7 @@ export function renderPlaylist(playlist, player) {
         type="search"
         placeholder="Search songs in this playlist"
         aria-label="Search songs in this playlist"
-        class="min-w-0 flex-1 rounded-lg border border-blue-800 bg-slate-950 px-4 py-2 text-white placeholder:text-slate-500 focus:border-cyan-400 focus:outline-none"
+        class="min-w-0 flex-1 rounded-lg border border-blue-800 bg-slate-950 px-4 py-2 text-base text-white placeholder:text-slate-500 focus:border-cyan-400 focus:outline-none"
       />
       <button
         type="button"

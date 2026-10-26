@@ -52,7 +52,7 @@ export function renderSearch(player) {
         type="search"
         placeholder="Search songs"
         aria-label="Search songs"
-        class="min-w-0 flex-1 rounded-lg border border-blue-800 bg-slate-950 px-4 py-2 text-white placeholder:text-slate-500 focus:border-cyan-400 focus:outline-none"
+        class="min-w-0 flex-1 rounded-lg border border-blue-800 bg-slate-950 px-4 py-2 text-base text-white placeholder:text-slate-500 focus:border-cyan-400 focus:outline-none"
       />
       <input
         id="api-search-limit"
@@ -64,7 +64,7 @@ export function renderSearch(player) {
         aria-label="Maximum API search results"
         title="API result limit"
         disabled
-        class="w-14 shrink-0 rounded-lg border border-blue-800 bg-slate-950 px-2 py-2 text-center text-sm text-white focus:border-cyan-400 focus:outline-none disabled:cursor-not-allowed disabled:opacity-40"
+        class="w-14 shrink-0 rounded-lg border border-blue-800 bg-slate-950 px-2 py-2 text-base text-white focus:border-cyan-400 focus:outline-none disabled:cursor-not-allowed disabled:opacity-40"
       />
       <details id="search-source" class="relative z-20 shrink-0">
         <summary

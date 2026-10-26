@@ -48,6 +48,35 @@ export function createSongOptionsMenu() {
         <i data-lucide="ListX" aria-hidden="true" class="h-4 w-4 shrink-0"></i>
         <span>Remove from playlist</span>
       </button>
+      <section data-queue-view hidden class="min-w-56 text-white">
+        <div class="mb-2 flex items-center justify-between border-b border-blue-700 pb-2">
+          <h2 class="px-2 text-sm font-semibold">Queue</h2>
+          <button
+            type="button"
+            data-action="queue-view-back"
+            class="rounded-lg px-2 py-1 text-xs text-cyan-300 hover:bg-white/10"
+          >Back</button>
+        </div>
+        <p data-queue-empty class="hidden px-2 py-3 text-sm text-slate-400">Queue is empty.</p>
+        <ul data-queue-list class="space-y-1"></ul>
+      </section>
+      <section data-playlist-picker hidden class="min-w-56 text-white">
+        <div class="mb-2 flex items-center justify-between border-b border-blue-700 pb-2">
+          <h2 class="px-2 text-sm font-semibold">Add to playlist</h2>
+          <button
+            type="button"
+            data-action="playlist-picker-back"
+            class="rounded-lg px-2 py-1 text-xs text-cyan-300 hover:bg-white/10"
+          >Back</button>
+        </div>
+        <ul data-playlist-picker-list class="space-y-1"></ul>
+        <button
+          type="button"
+          data-action="playlist-picker-new"
+          class="mt-2 w-full rounded-lg border-t border-blue-700 px-3 py-2 text-left text-sm font-semibold text-cyan-300 hover:bg-white/10"
+        >+ New playlist</button>
+        <div data-playlist-create-form></div>
+      </section>
     </div>
   `;
   return details;
