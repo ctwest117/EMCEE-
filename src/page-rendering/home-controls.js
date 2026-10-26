@@ -1,4 +1,4 @@
-import { renderPlaylists } from "./my-playlists-render";
+import { renderPlaylists } from "./my-playlists-render.js";
 import { renderPlayerIcons } from "../assets/icons.js";
 import { createPlaylistForm } from "./playlist-creation-form.js";
 
@@ -51,7 +51,7 @@ export function renderHome(player) {
     }
   });
 
-  searchInput.addEventListener("keyup", () => {
+  searchInput.addEventListener("input", () => {
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => {
       renderPlaylists(player, searchInput.value);

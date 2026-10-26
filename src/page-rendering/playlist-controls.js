@@ -78,7 +78,7 @@ export function renderPlaylist(playlist, player) {
   renderPlayerIcons();
 
   const searchInput = controls.querySelector("#song-search");
-  searchInput.addEventListener("keyup", () => {
+  searchInput.addEventListener("input", () => {
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => {
       renderSongs(playlist, player, searchInput.value);

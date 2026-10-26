@@ -141,7 +141,7 @@ export function renderSearch(player) {
     }
   };
 
-  searchInput.addEventListener("keyup", () => {
+  searchInput.addEventListener("input", () => {
     clearTimeout(searchTimeout);
     latestSearch++;
     searchTimeout = setTimeout(runSearch, 1000);

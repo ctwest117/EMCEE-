@@ -1,0 +1,94 @@
+# Emcee
+
+Emcee is a responsive, browser-based music player for searching music, building playlists, and managing playback from a compact player interface.
+
+## Purpose
+
+This project explores how a client-side music player can organize songs and playlists, provide a queue and playback controls, and keep a listener's library available between visits. It is also a learning project built around JavaScript classes, browser audio, DOM rendering, and local persistence.
+
+## Who it's for
+
+Emcee is for listeners who want a lightweight way to organize and play music previews in a browser, and for developers interested in a small JavaScript application with playlist, queue, and player state management.
+
+## Features
+
+- Create, search, rename, clear, and delete playlists.
+- Set a playlist cover using an image URL.
+- Search the local library or search the iTunes Search API.
+- Add songs to playlists and Favorites, or add them to the playback queue.
+- View the queue and remove upcoming songs.
+- Play, pause, skip, go back, and seek through the current audio.
+- Shuffle playlists and choose a repeat mode: none, all, or one.
+- Save playlists, library data, and playback settings in browser `localStorage`.
+- Use responsive controls and contextual song and playlist menus.
+
+## Technologies
+
+- JavaScript (ES modules)
+- HTML and CSS
+- Vite for local development and production builds
+- Tailwind CSS for styling
+- Lucide icons
+- iTunes Search API for online song search and preview audio
+- Node.js built-in test runner for automated tests
+
+## Run locally
+
+Install [Node.js](https://nodejs.org/) and npm, then run these commands from the project directory:
+
+```sh
+npm install
+npm run dev
+```
+
+Open the local URL printed by Vite. Online search requires an internet connection. Emcee stores its data in the current browser's `localStorage`; data is not synced across browsers or devices.
+
+## Tests and production build
+
+Run the automated test suite:
+
+```sh
+npm test
+```
+
+Create and preview a production build:
+
+```sh
+npm run build
+npm run preview
+```
+
+The tests cover player behavior, playlist and library operations, API result handling, event actions, and playlist creation form validation.
+
+## Project structure
+
+- `src/song-data/`: Song objects and the local song library.
+- `src/playlist-data/`: Playlists, song nodes, searching, sorting, and persistence.
+- `src/music-player-data/`: Playback state, queue, loop and shuffle behavior, and persistence.
+- `src/api-data/`: iTunes Search API requests.
+- `src/page-rendering/`: Header, home, playlist, search, and song-list views.
+- `src/mini-player/`: Mini-player rendering and song and playlist option menus.
+- `src/eventListeners.js`: Delegated UI actions and menu interactions.
+- `src/assets/`: Icons, images, and fonts.
+- `tests/`: Automated tests run by `node --test`.
+
+## Known limitations
+
+- iTunes search supplies preview audio rather than full-length tracks. The preview is typically 30 seconds, and the API does not provide a way for Emcee to request an arbitrary starting offset within the full track. Preview availability can vary by result and storefront. See Apple's [Search API result fields](https://developer.apple.com/library/archive/documentation/AudioVideo/Conceptual/iTuneSearchAPI/UnderstandingSearchResults.html).
+- Saved data is local to one browser and can be lost if its site data is cleared. There is no account, cloud sync, or server-side storage.
+- Automated tests cover the data and interaction logic; the visual renderers do not yet have browser-based integration tests.
+- Playlist covers are entered as image URLs; the app does not upload or host images.
+
+## Future improvements
+
+- Add browser-based tests for rendered views and responsive behavior.
+- Improve accessibility, including keyboard navigation and screen-reader labels for controls.
+- Add import/export or account-based backup for playlists and settings.
+- Explore additional audio sources that can provide full tracks where licensing permits.
+- Add richer playlist management, such as drag-and-drop song ordering.
+
+## Authors and contributions
+
+Emcee was created by the project owner, who designed the application and built its core data model, playback behavior, playlist system, API search, and visual direction. The project owner's name is not listed in this repository yet.
+
+ChatGPT contributed implementation and review work during development, including reusable playlist creation and editing forms, queue and playlist option menus, test coverage, and this README. The README was written by ChatGPT at the project owner's request. The project remains the project owner's work.

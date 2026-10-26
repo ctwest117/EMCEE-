@@ -12,7 +12,7 @@ const defaultCover =
 
 // holds song inside playlist
 export class SongNode {
-  constructor(song) {
+  constructor(song, { addToLibrary = true } = {}) {
     if (!(song instanceof Song)) {
       throw new TypeError("SongNode expects a Song instance");
     }
@@ -27,7 +27,7 @@ export class SongNode {
     this.nextShuffled = null;
     this.prevShuffled = null;
 
-    Lib.add(song);
+    if (addToLibrary) Lib.add(song);
   }
 }
 

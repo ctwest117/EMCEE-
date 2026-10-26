@@ -84,7 +84,10 @@ function renderQueue(details, player) {
     deleteButton.dataset.queueIndex = String(index);
     deleteButton.className =
       "shrink-0 rounded-md px-2 py-1 text-xs text-rose-300 hover:bg-rose-950/60 hover:text-rose-200";
-    deleteButton.setAttribute("aria-label", `Remove ${queueNode.song.title} from queue`);
+    deleteButton.setAttribute(
+      "aria-label",
+      `Remove ${queueNode.song.title} from queue`,
+    );
     deleteButton.textContent = "Delete";
 
     item.append(title, deleteButton);
@@ -117,10 +120,13 @@ function renderPlaylistPicker(details, song) {
   }
 
   formContainer.replaceChildren();
-  const createForm = createPlaylistForm((newPlaylist) => {
-    newPlaylist.addSong(song);
-    closeSongOptions();
-  }, { inline: true });
+  const createForm = createPlaylistForm(
+    (newPlaylist) => {
+      newPlaylist.addSong(song);
+      closeSongOptions();
+    },
+    { inline: true },
+  );
   formContainer.append(createForm);
 }
 
@@ -147,18 +153,14 @@ export function setupEventListeners(player) {
       if (
         activeField instanceof Element &&
         activeField.matches("input, textarea, select") &&
-        activeField.closest(
-          "#song-options-details, #playlist-options-details",
-        )
+        activeField.closest("#song-options-details, #playlist-options-details")
       ) {
         return;
       }
 
       if (
         event.target instanceof Element &&
-        event.target.closest(
-          "#song-options-details, #playlist-options-details",
-        )
+        event.target.closest("#song-options-details, #playlist-options-details")
       ) {
         return;
       }
@@ -383,9 +385,11 @@ export function setupEventListeners(player) {
             "[data-playlist-cover-form]",
           );
           coverForm?.classList.add("hidden");
-          panel?.querySelectorAll("[data-playlist-option]").forEach((option) => {
-            option.classList.remove("hidden");
-          });
+          panel
+            ?.querySelectorAll("[data-playlist-option]")
+            .forEach((option) => {
+              option.classList.remove("hidden");
+            });
           closePlaylistOptions();
           break;
         }
@@ -396,9 +400,11 @@ export function setupEventListeners(player) {
             "[data-playlist-rename-form]",
           );
           renameForm?.classList.add("hidden");
-          panel?.querySelectorAll("[data-playlist-option]").forEach((option) => {
-            option.classList.remove("hidden");
-          });
+          panel
+            ?.querySelectorAll("[data-playlist-option]")
+            .forEach((option) => {
+              option.classList.remove("hidden");
+            });
           closePlaylistOptions();
           break;
         }
@@ -429,10 +435,24 @@ export function setupEventListeners(player) {
           );
           if (!playlist || playlist.size === 0) break;
 
-          if (player.currentPlaylist.id !== playlist.id)
-            player.selectPlaylist(playlist);
-          // play() is a toggle, so call it only when playback is stopped.
-          else player.play();
+          try {
+            if (player.currentPlaylist !== playlist) {
+              player.selectPlaylist(playlist);
+            }
+
+            // Recover a stopped player at the end of a playlist.
+            if (!player.currentNode) {
+              player.isPlaying = false;
+              player.currentNode = player.playbackOrder?.[0] ?? playlist.head;
+              player.queuePrev = player.currentNode;
+              player.updateSrc();
+            }
+
+            // This button means Play, so don't toggle a playing playlist to pause.
+            if (!player.isPlaying) player.play();
+          } catch (error) {
+            console.error("Could not start playlist playback", error);
+          }
 
           syncMiniPlayer(player);
           break;
@@ -450,8 +470,8 @@ export function setupEventListeners(player) {
 
         case "toggle-favorite": {
           const song = button.dataset.songId
-            ? Lib.songs.get(Number(button.dataset.songId)) ??
-              button.closest('li[data-action="select-song"]')?.songNode?.song
+            ? (Lib.songs.get(Number(button.dataset.songId)) ??
+              button.closest('li[data-action="select-song"]')?.songNode?.song)
             : player.currentNode?.song;
           if (!song) break;
 
@@ -467,8 +487,7 @@ export function setupEventListeners(player) {
 
         case "queue": {
           const songId = Number(songDetails?.dataset.songId);
-          const song =
-            songDetails?.selectedSong ?? Lib.songs.get(songId);
+          const song = songDetails?.selectedSong ?? Lib.songs.get(songId);
           if (song) player.addToQueue(song);
           closeSongOptions();
           break;
@@ -514,7 +533,9 @@ export function setupEventListeners(player) {
           menuPanel.querySelectorAll(":scope > button").forEach((item) => {
             item.hidden = false;
           });
-          const removeButton = menuPanel.querySelector('[data-action="remove"]');
+          const removeButton = menuPanel.querySelector(
+            '[data-action="remove"]',
+          );
           if (removeButton?.classList.contains("hidden")) {
             removeButton.hidden = true;
           }
@@ -536,7 +557,9 @@ export function setupEventListeners(player) {
         }
 
         case "add-song-to-playlist": {
-          const playlist = Playlist.myPlaylists.get(Number(button.dataset.playId));
+          const playlist = Playlist.myPlaylists.get(
+            Number(button.dataset.playId),
+          );
           const song = songDetails?.selectedSong;
           if (playlist && song && playlist.findById(song.id) === -1) {
             if (playlist === Playlist.favorites) {
@@ -592,7 +615,9 @@ export function setupEventListeners(player) {
           break;
       }
     } else if (
-      !document.querySelector("#song-options-details")?.contains(event.target) &&
+      !document
+        .querySelector("#song-options-details")
+        ?.contains(event.target) &&
       !document
         .querySelector("#playlist-options-details")
         ?.contains(event.target)

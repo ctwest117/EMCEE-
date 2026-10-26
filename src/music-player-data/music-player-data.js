@@ -1,5 +1,6 @@
 import { SongNode, Playlist } from "../playlist-data/playlist-data.js";
 import { Song } from "../song-data/song-data.js";
+import { Lib } from "../song-data/song-library.js";
 
 // MusicPlayer manages playback and tracks current playlist + song
 export class MusicPlayer {
@@ -44,22 +45,25 @@ export class MusicPlayer {
 
     const loopModes = ["off", "all", "one"];
     this.setLoopMode(loopModes.includes(res.loop) ? res.loop : "off");
-    this.isShuffled = res.isShuffled === true;
-
+    // Restore the saved position in normal playlist order before rebuilding shuffle.
+    this.isShuffled = false;
     this.isRestoringPlayback = true;
     try {
       this.selectPlaylist(playlist);
-      if (playlist.size === 0) return;
+      if (playlist.size > 0) {
+        const index = res.songPos;
+        const node =
+          Number.isInteger(index) && index >= 0
+            ? this.playbackOrder[index]
+            : null;
 
-      const index = res.songPos;
-      const node =
-        Number.isInteger(index) && index >= 0
-          ? this.playbackOrder[index]
-          : null;
+        if (node) this.selectSong(node);
+      }
 
-      if (node) this.selectSong(node);
+      this.isShuffled = res.isShuffled === true;
+      if (this.isShuffled) this.shufflePlaylist();
 
-      this.audio.currentTime = res.time ?? 0;
+      this.audio.currentTime = Number.isFinite(res.time) ? res.time : 0;
     } finally {
       this.isRestoringPlayback = false;
     }
@@ -143,6 +147,7 @@ export class MusicPlayer {
     }
     if (!this.isRestoringPlayback) this.save();
   }
+
   // play/pause, selectSong, nextSong, and prevSong methods
   play() {
     if (!this.currentNode) {
@@ -183,15 +188,16 @@ export class MusicPlayer {
       this.queuePrev = this.currentNode;
     }
 
-    if (this.loop === "one") this.loop = "all";
+    if (this.loop === "one") this.setLoopMode("all");
     if (!this.currentNode) {
       if (this.loop === "all") {
         if (!this.isShuffled) this.currentNode = this.currentPlaylist.head;
         else this.currentNode = this.shuffleHead;
       }
     }
+    if (!this.currentNode) this.isPlaying = false;
     this.updateSrc();
-    if (!this.isPlaying) this.play();
+    if (!this.isPlaying && this.currentNode) this.play();
   }
 
   prev() {
@@ -210,7 +216,7 @@ export class MusicPlayer {
       this.currentNode = this.currentNode.prev;
     }
 
-    if (this.loop === "one") this.loop = "all";
+    if (this.loop === "one") this.setLoopMode("all");
     if (!this.currentNode) {
       if (this.loop === "all") {
         this.currentNode = !this.isShuffled
@@ -220,8 +226,9 @@ export class MusicPlayer {
     }
     this.queuePrev = this.currentNode;
 
+    if (!this.currentNode) this.isPlaying = false;
     this.updateSrc();
-    if (!this.isPlaying) this.play();
+    if (!this.isPlaying && this.currentNode) this.play();
   }
   //   playlist select controls
   selectPlaylist(playlist) {
@@ -339,7 +346,8 @@ export class MusicPlayer {
     if (!(song instanceof Song)) {
       throw new TypeError("addToQueue() expects a Song instance");
     }
-    const node = new SongNode(song);
+    // Queue nodes hold their own song reference; they aren't Library entries.
+    const node = new SongNode(song, { addToLibrary: false });
     this.queue.push(node);
     this.isQueue = true;
     return node;
@@ -348,16 +356,26 @@ export class MusicPlayer {
   removeFromQueue(node) {
     if (!this.queue.includes(node)) return -1;
     this.queue = this.queue.filter((song) => song !== node);
+    this.releaseQueueSong(node);
     return node;
   }
 
   clearQueue() {
+    this.queue.forEach((node) => this.releaseQueueSong(node));
     this.queue = [];
-    if (this.currentNode.playlist) this.isQueue = false;
+    if (!this.currentNode || this.currentNode.playlist) this.isQueue = false;
   }
 
   nextInQueue() {
     const result = this.queue.shift();
+    this.releaseQueueSong(result);
     return result ?? null;
+  }
+
+  // Queue-only search results shouldn't become permanent Library entries.
+  releaseQueueSong(node) {
+    const song = node?.song;
+    if (!song || Lib.trackedSongs.has(song.id)) return;
+    if (Lib.del(song)) Lib.save();
   }
 }
