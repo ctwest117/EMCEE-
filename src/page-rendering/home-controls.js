@@ -7,6 +7,7 @@ let searchTimeout;
 export function renderHome(player) {
   const controls = document.getElementById("view-controls");
   if (!controls) return;
+  if (player) player.lastRenderedView = { type: "home" };
   clearTimeout(searchTimeout);
 
   controls.innerHTML = /* html */ `

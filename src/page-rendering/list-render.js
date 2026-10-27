@@ -109,7 +109,6 @@ export function renderSongs(playlist, player, query = "") {
     lastRenderedPlaylist = playlist;
     lastRenderedPlayer = player;
     lastRenderedQuery = searchQuery;
-    updatePlaylistHeading(playlist);
     container.innerHTML = html;
     container
       .querySelectorAll('li[data-action="select-song"]')
@@ -138,28 +137,6 @@ export function refreshRenderedSongs(event) {
   }
 
   renderSongs(lastRenderedPlaylist, lastRenderedPlayer, lastRenderedQuery);
-}
-
-// Keep the current playlist label and cover alongside the view's controls.
-function updatePlaylistHeading(playlist) {
-  const heading = document.getElementById("rendered-playlist-heading");
-  if (!heading) return;
-
-  heading.replaceChildren();
-  const title = document.createElement("h1");
-  title.className = "min-w-0 max-w-full truncate text-2xl font-semibold text-white md:text-3xl";
-  title.textContent = playlist.isSearchResults ? "Search results" : playlist.name;
-
-  if (!playlist.isSearchResults && playlist.cover && playlist.cover !== "none") {
-    const image = document.createElement("img");
-    image.src = playlist.cover;
-    image.alt = `${playlist.name} cover`;
-    image.className = "aspect-square w-full max-w-[32rem] rounded-xl object-cover shadow-lg shadow-cyan-950/40";
-    heading.append(image);
-  }
-
-  heading.className = "flex min-w-0 flex-col items-start gap-3 px-4 pt-4";
-  heading.append(title);
 }
 
 // Update the current-song treatment without rebuilding rows during audio events.

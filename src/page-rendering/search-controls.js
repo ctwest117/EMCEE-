@@ -46,7 +46,7 @@ export function renderSearch(player) {
   clearTimeout(searchTimeout);
   latestSearch++;
   controls.innerHTML = /* html */ `
-    <div id="rendered-playlist-heading"></div>
+    <h1 class="px-4 pt-4 text-2xl font-semibold text-white md:text-3xl">Search results</h1>
     <div class="flex items-center gap-2 px-4 py-3">
       <input
         id="song-search"
