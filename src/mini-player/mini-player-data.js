@@ -7,6 +7,131 @@ import { syncRenderedPlaylists } from "../page-rendering/my-playlists-render.js"
 
 let lastSyncedSongId = null;
 let progressFrame = null;
+let hasMediaSessionSong = false;
+let lastMediaSessionSongId = null;
+
+function getMediaSession() {
+  return typeof navigator !== "undefined" ? navigator.mediaSession : null;
+}
+
+function updateMediaSession(player, song) {
+  const mediaSession = getMediaSession();
+  if (!mediaSession) return;
+
+  const songId = song?.id ?? null;
+  if (!hasMediaSessionSong || songId !== lastMediaSessionSongId) {
+    hasMediaSessionSong = true;
+    lastMediaSessionSongId = songId;
+
+    if (song && typeof MediaMetadata !== "undefined") {
+      const largeCover = song.cover?.replace("100x100", "400x400");
+      const artwork = song.cover
+        ? largeCover !== song.cover
+          ? [
+              { src: song.cover, sizes: "100x100" },
+              { src: largeCover, sizes: "400x400" },
+            ]
+          : [{ src: song.cover }]
+        : [];
+
+      mediaSession.metadata = new MediaMetadata({
+        title: song.title ?? "Unknown title",
+        artist: song.artist ?? "Unknown artist",
+        album: song.album ?? "",
+        artwork,
+      });
+    } else {
+      mediaSession.metadata = null;
+    }
+  }
+
+  mediaSession.playbackState = song
+    ? player.audio.paused
+      ? "paused"
+      : "playing"
+    : "none";
+
+  if (typeof mediaSession.setPositionState !== "function") return;
+  const duration = player.audio.duration;
+  if (!Number.isFinite(duration) || duration <= 0 || !song) {
+    try {
+      mediaSession.setPositionState();
+    } catch {
+      // Position reporting is optional and varies by browser.
+    }
+    return;
+  }
+
+  try {
+    mediaSession.setPositionState({
+      duration,
+      playbackRate: player.audio.playbackRate,
+      position: Math.min(player.audio.currentTime, duration),
+    });
+  } catch {
+    // Ignore position updates that a browser does not support.
+  }
+}
+
+function registerMediaSessionActions(player) {
+  const mediaSession = getMediaSession();
+  if (!mediaSession) return;
+
+  const sync = () => syncMiniPlayer(player);
+  const seekTo = (time) => {
+    const duration = player.audio.duration;
+    if (!Number.isFinite(duration) || duration <= 0) return;
+    player.audio.currentTime = Math.max(0, Math.min(time, duration));
+    sync();
+  };
+  const actions = {
+    play: async () => {
+      if (!player.currentNode) {
+        player.play();
+        return;
+      }
+      if (player.audio.paused) {
+        try {
+          await player.audio.play();
+          player.isPlaying = true;
+          sync();
+        } catch (error) {
+          console.error("Could not start playback from media controls", error);
+        }
+      }
+    },
+    pause: () => {
+      player.audio.pause();
+      player.isPlaying = false;
+      sync();
+    },
+    previoustrack: () => {
+      player.prev();
+      sync();
+    },
+    nexttrack: () => {
+      player.skip();
+      sync();
+    },
+    seekbackward: (details) => {
+      seekTo(player.audio.currentTime - (details.seekOffset ?? 10));
+    },
+    seekforward: (details) => {
+      seekTo(player.audio.currentTime + (details.seekOffset ?? 10));
+    },
+    seekto: (details) => {
+      if (Number.isFinite(details.seekTime)) seekTo(details.seekTime);
+    },
+  };
+
+  for (const [action, handler] of Object.entries(actions)) {
+    try {
+      mediaSession.setActionHandler(action, handler);
+    } catch {
+      // Some browsers do not support every media action.
+    }
+  }
+}
 
 // Convert audio time in seconds to the familiar minutes:seconds display.
 function formatTime(seconds) {
@@ -79,6 +204,7 @@ export function syncMiniPlayer(player) {
   if (!title || !artist || !playPause) return;
 
   const song = player.currentNode?.song;
+  updateMediaSession(player, song);
   title.textContent = song?.title ?? "Nothing playing";
   artist.textContent = song?.artist ?? "Choose a song to start listening";
   if (album) album.textContent = song?.album ?? "";
@@ -187,6 +313,7 @@ export function miniPlayerListeners(player) {
 
   const miniPlayer = document.querySelector("#mini-player");
   const collapseButton = document.querySelector("#mini-player-collapse");
+  registerMediaSessionActions(player);
   let gestureStart = null;
   let suppressClickUntil = 0;
 
