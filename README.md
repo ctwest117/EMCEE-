@@ -16,10 +16,13 @@ Emcee is for listeners who want a lightweight way to organize and play music pre
 - Set a playlist cover using an image URL.
 - Search the local library or search the iTunes Search API.
 - Add songs to playlists and Favorites, or add them to the playback queue.
+- Reorder songs in a playlist by dragging its grip handle; filtered results are not reordered.
 - View the queue and remove upcoming songs.
 - Play, pause, skip, go back, and seek through the current audio.
 - Shuffle playlists and choose a repeat mode: none, all, or one.
-- Save playlists, library data, and playback settings in browser `localStorage`.
+- Expand the mini-player by clicking or dragging it upward. The expanded player shows larger album artwork, track details, progress, and playback controls over the current view.
+- Show a spinning Disc3 icon while an API search is in progress.
+- Save playlists, library data, playback settings, and the last open Home or playlist view in browser `localStorage`.
 - Use responsive controls and contextual song and playlist menus.
 
 ## Technologies
@@ -29,6 +32,7 @@ Emcee is for listeners who want a lightweight way to organize and play music pre
 - Vite for local development and production builds
 - Tailwind CSS for styling
 - Lucide icons
+- SortableJS for playlist song reordering
 - iTunes Search API for online song search and preview audio
 - Node.js built-in test runner for automated tests
 
@@ -58,6 +62,16 @@ npm run build
 npm run preview
 ```
 
+## Deploy to Netlify
+
+To deploy manually, build the project and upload the generated `dist/` folder using Netlify's manual deploy or drag-and-drop publisher:
+
+```sh
+npm run build
+```
+
+For automatic deployments, connect the repository to Netlify and configure `npm run build` as the build command and `dist` as the publish directory. Netlify can then rebuild the site when changes are pushed to the connected production branch.
+
 The tests cover player behavior, playlist and library operations, API result handling, event actions, and playlist creation form validation.
 
 ## Project structure
@@ -78,6 +92,7 @@ The tests cover player behavior, playlist and library operations, API result han
 - Saved data is local to one browser and can be lost if its site data is cleared. There is no account, cloud sync, or server-side storage.
 - Automated tests cover the data and interaction logic; the visual renderers do not yet have browser-based integration tests.
 - Playlist covers are entered as image URLs; the app does not upload or host images.
+- The expanded player requests a 400×400 artwork URL by replacing `100x100` in the song artwork URL. Higher-resolution artwork depends on the image host having that size available.
 
 ## Future improvements
 
@@ -85,7 +100,6 @@ The tests cover player behavior, playlist and library operations, API result han
 - Improve accessibility, including keyboard navigation and screen-reader labels for controls.
 - Add import/export or account-based backup for playlists and settings.
 - Explore additional audio sources that can provide full tracks where licensing permits.
-- Add richer playlist management, such as drag-and-drop song ordering.
 
 ## Authors and contributions
 

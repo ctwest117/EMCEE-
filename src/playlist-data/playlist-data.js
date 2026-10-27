@@ -8,7 +8,10 @@ function notifyPlaylistChange(playlist, removed = false) {
 }
 
 const defaultCover =
-  "https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=500&h=500&q=80";
+  "https://static.vecteezy.com/system/resources/previews/052/887/161/non_2x/neon-icon-of-a-shiny-vinyl-record-shining-on-black-background-vector.jpg";
+
+const favoriteCover =
+  "https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTExL3Jhd3BpeGVsb2ZmaWNlMl9zaW1wbGVfbGluZV9uZW9uX29mX2hlYXJ0X2ljb25faW5fdGhlX3N0eWxlX29mX18yNWYzMThhYy1mMmI2LTRhOWYtYjgyYy1iYzNiOGZlYjQzYmNfMS5qcGc.jpg";
 
 // holds song inside playlist
 export class SongNode {
@@ -71,10 +74,14 @@ export class Playlist {
     }
 
     const duplicate = [...Playlist.myPlaylists.values()].some(
-      (playlist) => playlist.name.trim().toLowerCase() === cleanName.toLowerCase(),
+      (playlist) =>
+        playlist.name.trim().toLowerCase() === cleanName.toLowerCase(),
     );
     if (duplicate) {
-      return { playlist: null, error: "A playlist with that name already exists." };
+      return {
+        playlist: null,
+        error: "A playlist with that name already exists.",
+      };
     }
 
     return { playlist: new Playlist(cleanName), error: "" };
@@ -133,7 +140,7 @@ export class Playlist {
   }
 
   // favorites playlist
-  static favorites = new Playlist("Favorites");
+  static favorites = new Playlist("Favorites", favoriteCover);
 
   static addToFavorites(song) {
     if (!(song instanceof Song)) {

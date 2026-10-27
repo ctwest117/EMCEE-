@@ -118,7 +118,17 @@ export function renderSearch(player) {
       return;
     }
 
-    status.textContent = searchSource === "api" ? "Searching..." : "";
+    if (searchSource === "api") {
+      status.innerHTML = /* html */ `
+        <span class="inline-flex items-center" aria-label="Searching">
+          <i data-lucide="disc-3" class="h-4 w-4 animate-spin" aria-hidden="true"></i>
+          <span class="sr-only">Searching...</span>
+        </span>
+      `;
+      renderPlayerIcons();
+    } else {
+      status.textContent = "";
+    }
 
     try {
       const songs =

@@ -35,9 +35,9 @@ export function renderMini() {
           alt=""
         />
         <div class="mini-player-song-copy min-w-0">
+          <p id="mini-song-album" class="mini-song-album truncate text-xs text-slate-400"></p>
           <p id="mini-song-title" class="truncate text-sm font-semibold sm:text-base">Nothing playing</p>
           <p id="mini-song-artist" class="truncate text-xs text-slate-400 sm:text-sm">Choose a song to start listening</p>
-          <p id="mini-song-album" class="mini-song-album truncate text-xs text-slate-400"></p>
         </div>
       </div>
 
