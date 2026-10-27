@@ -184,6 +184,10 @@ button:not(:disabled) {
   display: none;
 }
 
+.mini-player-track-row {
+  display: contents;
+}
+
 .mini-player-track-info {
   grid-area: track;
   display: flex;
@@ -235,12 +239,12 @@ button:not(:disabled) {
 #mini-player.is-expanded > .mini-player-shell {
   height: 100%;
   grid-template-areas:
-    "collapse collapse"
-    "cover cover"
-    "track actions"
-    "progress progress"
-    "transport transport";
-  grid-template-columns: minmax(0, 1fr) auto;
+    "collapse"
+    "cover"
+    "track-row"
+    "progress"
+    "transport";
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto minmax(0, 1fr) auto auto auto;
   align-content: stretch;
   justify-items: center;
@@ -304,9 +308,19 @@ button:not(:disabled) {
 
 #mini-player.is-expanded .mini-player-track-info {
   display: flex;
-  width: min(100%, 48rem);
-  justify-self: center;
+  min-width: 0;
+  flex: 1 1 auto;
   gap: 0;
+}
+
+#mini-player.is-expanded .mini-player-track-row {
+  display: flex;
+  width: min(100%, 48rem);
+  min-width: 0;
+  grid-area: track-row;
+  align-items: center;
+  justify-self: center;
+  gap: 1rem;
 }
 
 #mini-player.is-expanded .mini-song-cover {
@@ -337,7 +351,7 @@ button:not(:disabled) {
 
 #mini-player.is-expanded .mini-player-side-controls {
   align-self: center;
-  justify-self: end;
+  justify-self: auto;
 }
 
 #mini-player.is-expanded .mini-player-progress {

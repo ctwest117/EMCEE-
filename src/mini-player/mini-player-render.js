@@ -35,40 +35,42 @@ export function renderMini() {
         <img id="expanded-song-cover" class="expanded-song-cover" alt="" />
       </div>
 
-      <div class="mini-player-track-info">
-        <img
-          id="mini-song-cover"
-          class="mini-song-cover h-8 w-8 shrink-0 rounded-lg object-cover sm:h-10 sm:w-10 md:h-12 md:w-12"
-          alt=""
-        />
-        <div class="mini-player-song-copy min-w-0">
-          <p id="mini-song-album" class="mini-song-album truncate text-xs text-slate-400"></p>
-          <p id="mini-song-title" class="truncate text-sm font-semibold sm:text-base">Nothing playing</p>
-          <p id="mini-song-artist" class="truncate text-xs text-slate-400 sm:text-sm">Choose a song to start listening</p>
+      <div class="mini-player-track-row">
+        <div class="mini-player-track-info">
+          <img
+            id="mini-song-cover"
+            class="mini-song-cover h-8 w-8 shrink-0 rounded-lg object-cover sm:h-10 sm:w-10 md:h-12 md:w-12"
+            alt=""
+          />
+          <div class="mini-player-song-copy min-w-0">
+            <p id="mini-song-album" class="mini-song-album truncate text-xs text-slate-400"></p>
+            <p id="mini-song-title" class="truncate text-sm font-semibold sm:text-base">Nothing playing</p>
+            <p id="mini-song-artist" class="truncate text-xs text-slate-400 sm:text-sm">Choose a song to start listening</p>
+          </div>
         </div>
-      </div>
 
-      <div class="mini-player-side-controls flex shrink-0 items-center justify-end gap-0 sm:gap-1">
-        <button
-          id="toggle-favorite"
-          data-action="toggle-favorite"
-          type="button"
-          class="player-icon-button text-slate-400"
-          aria-label="Add to favorites"
-          title="Add to favorites"
-        ><i data-lucide="heart" aria-hidden="true"></i></button>
-        <button
-          id="player-more"
-          type="button"
-          data-action="song-options"
-          data-song-id=""
-          data-play-id=""
-          aria-label="Song options"
-          aria-controls="song-options-details"
-          aria-expanded="false"
-          title="Song options"
-          class="player-icon-button text-cyan-400"
-        ><i data-lucide="ellipsis-vertical" aria-hidden="true"></i></button>
+        <div class="mini-player-side-controls flex shrink-0 items-center justify-end gap-0 sm:gap-1">
+          <button
+            id="toggle-favorite"
+            data-action="toggle-favorite"
+            type="button"
+            class="player-icon-button text-slate-400"
+            aria-label="Add to favorites"
+            title="Add to favorites"
+          ><i data-lucide="heart" aria-hidden="true"></i></button>
+          <button
+            id="player-more"
+            type="button"
+            data-action="song-options"
+            data-song-id=""
+            data-play-id=""
+            aria-label="Song options"
+            aria-controls="song-options-details"
+            aria-expanded="false"
+            title="Song options"
+            class="player-icon-button text-cyan-400"
+          ><i data-lucide="ellipsis-vertical" aria-hidden="true"></i></button>
+        </div>
       </div>
 
       <div class="mini-player-progress">
