@@ -15,7 +15,7 @@ export function renderMini() {
   // the full width above them.
   miniPlayer.innerHTML = /* html */ `
     <section
-      class="relative grid w-full min-w-0 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-1 gap-y-0 rounded-t-4xl border-t border-blue-600 bg-slate-950/90 px-2 py-4 text-white shadow-[0_0_24px_rgba(0,82,255,0.18)] backdrop-blur-lg sm:gap-x-2 sm:px-3 md:gap-x-8 md:px-10"
+      class="relative grid w-full min-w-0 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-1 gap-y-0  border-t border-blue-600 bg-slate-950/90 px-2 py-4 text-white shadow-[0_0_24px_rgba(0,82,255,0.18)] backdrop-blur-lg sm:gap-x-2 sm:px-3 md:gap-x-8 md:px-10"
       aria-label="Music player"
     >
       <div class="col-span-3 min-w-0 items-center md:items-start">
@@ -52,7 +52,7 @@ export function renderMini() {
           id="previous-track"
           data-action="previous-track"
           type="button"
-          class="player-icon-button text-cyan-400 hover:text-cyan-200"
+          class="player-icon-button text-cyan-400"
           aria-label="Previous track"
           title="Previous track"
         ><i data-lucide="skip-back" aria-hidden="true"></i></button>
@@ -60,7 +60,7 @@ export function renderMini() {
           id="play-pause"
           data-action="play-pause"
           type="button"
-          class="player-icon-button player-primary-button text-fuchsia-400 hover:text-fuchsia-200"
+          class="player-icon-button player-primary-button text-fuchsia-400"
           aria-label="Play"
           title="Play"
         ><i data-lucide="play" aria-hidden="true"></i></button>
@@ -68,7 +68,7 @@ export function renderMini() {
           id="next-track"
           data-action="next-track"
           type="button"
-          class="player-icon-button text-cyan-400 hover:text-cyan-200"
+          class="player-icon-button text-cyan-400"
           aria-label="Next track"
           title="Next track"
         ><i data-lucide="skip-forward" aria-hidden="true"></i></button>
@@ -84,7 +84,7 @@ export function renderMini() {
             aria-label="Loop off"
             aria-pressed="false"
             title="Loop off"
-            class="player-icon-button text-slate-400 hover:text-cyan-200"
+            class="player-icon-button text-slate-400"
           ><i data-lucide="repeat-off" aria-hidden="true"></i></button>
           <button
             id="toggle-shuffle"
@@ -93,7 +93,7 @@ export function renderMini() {
             aria-label="Turn shuffle on"
             aria-pressed="false"
             title="Turn shuffle on"
-            class="player-icon-button text-slate-400 hover:text-cyan-200"
+            class="player-icon-button text-slate-400"
           ><i data-lucide="shuffle" aria-hidden="true"></i></button>
         </div>
         <div class="flex shrink-0 items-center gap-0 sm:gap-1">
@@ -101,7 +101,7 @@ export function renderMini() {
             id="toggle-favorite"
             data-action="toggle-favorite"
             type="button"
-            class="player-icon-button text-slate-400 hover:text-fuchsia-400"
+            class="player-icon-button text-slate-400"
             aria-label="Add to favorites"
             title="Add to favorites"
           ><i data-lucide="heart" aria-hidden="true"></i></button>
@@ -115,7 +115,7 @@ export function renderMini() {
             aria-controls="song-options-details"
             aria-expanded="false"
             title="Song options"
-            class="player-icon-button text-cyan-400 hover:text-cyan-200"
+            class="player-icon-button text-cyan-400"
           ><i data-lucide="ellipsis-vertical" aria-hidden="true"></i></button>
         </div>
       </div>

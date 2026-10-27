@@ -593,10 +593,31 @@ export function setupEventListeners(player) {
           break;
         }
 
-        case "remove":
-          // These menu actions don't have behavior wired up yet.
+        case "remove": {
+          const playlist = Playlist.myPlaylists.get(
+            Number(songDetails?.dataset.playId),
+          );
+          const song = songDetails?.selectedSong;
+          if (!playlist || !song || playlist.isSearchResults) {
+            closeSongOptions();
+            break;
+          }
+
+          let removedSong;
+          if (playlist === Playlist.favorites) {
+            removedSong = Playlist.removeFromFavorites(song);
+          } else {
+            const node = playlist.findById(song.id);
+            if (node !== -1) removedSong = playlist.removeSong(node);
+          }
+
+          if (removedSong) {
+            syncMiniPlayer(player);
+            refreshRenderedSongs();
+          }
           closeSongOptions();
           break;
+        }
 
         case "home":
           renderHome(player);

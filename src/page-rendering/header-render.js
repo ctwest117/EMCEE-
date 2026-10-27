@@ -1,5 +1,7 @@
 import { renderPlayerIcons } from "../assets/icons.js";
 
+let scrollListenerController;
+
 export function renderHeader() {
   const header = document.querySelector("#app-header");
   if (!header) return;
@@ -38,9 +40,30 @@ export function renderHeader() {
       data-action="scroll-top"
       aria-label="Back to top"
       title="To Top"
-      class="player-icon-button header-icon-button fixed right-4 top-3 z-60 text-cyan-400 hover:text-cyan-200"
+      class="player-icon-button header-icon-button fixed right-4 top-3 z-60 hidden text-cyan-400 hover:text-cyan-200"
+      hidden
     ><i data-lucide="chevron-up" aria-hidden="true"></i></button>
   `;
+
+  const app = document.querySelector("#app");
+  const backToTop = header.querySelector('[data-action="scroll-top"]');
+  if (app && backToTop) {
+    scrollListenerController?.abort();
+    scrollListenerController = new AbortController();
+
+    const updateBackToTopVisibility = () => {
+      const shouldShow = app.scrollTop > 16;
+      backToTop.hidden = !shouldShow;
+      backToTop.classList.toggle("hidden", !shouldShow);
+      backToTop.setAttribute("aria-hidden", String(!shouldShow));
+    };
+
+    app.addEventListener("scroll", updateBackToTopVisibility, {
+      passive: true,
+      signal: scrollListenerController.signal,
+    });
+    updateBackToTopVisibility();
+  }
 
   renderPlayerIcons();
 }

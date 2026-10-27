@@ -143,7 +143,13 @@ export class MusicPlayer {
       this.audio.src = "";
     }
     if (this.isPlaying && !!this.currentNode) {
-      this.audio.play().catch((err) => console.error("Could not play", err));
+      this.audio.play().catch((err) => {
+        if (err.code === 20) {
+          console.warn("Aborted previous play");
+        } else {
+          console.error("Could not play", err);
+        }
+      });
     }
     if (!this.isRestoringPlayback) this.save();
   }

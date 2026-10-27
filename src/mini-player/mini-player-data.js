@@ -1,5 +1,9 @@
 import { renderPlayerIcons } from "../assets/icons.js";
-import { refreshRenderedSongs } from "../page-rendering/list-render.js";
+import {
+  refreshRenderedSongs,
+  syncRenderedSongState,
+} from "../page-rendering/list-render.js";
+import { syncRenderedPlaylists } from "../page-rendering/my-playlists-render.js";
 
 let lastSyncedSongId = null;
 let progressFrame = null;
@@ -75,6 +79,8 @@ export function syncMiniPlayer(player) {
   const song = player.currentNode?.song;
   title.textContent = song?.title ?? "Nothing playing";
   artist.textContent = song?.artist ?? "Choose a song to start listening";
+  syncRenderedSongState(player);
+  syncRenderedPlaylists(player);
 
   const songId = song?.id ?? null;
   if (songId !== lastSyncedSongId) {
@@ -94,6 +100,9 @@ export function syncMiniPlayer(player) {
     songOptionsButton.dataset.playId = player.currentPlaylist
       ? String(player.currentPlaylist.id)
       : "";
+    songOptionsButton.dataset.searchResults = String(
+      Boolean(player.currentPlaylist?.isSearchResults),
+    );
   }
 
   if (favBtn) {
@@ -108,7 +117,6 @@ export function syncMiniPlayer(player) {
 
     favBtn.classList.toggle("text-fuchsia-400", isFavorite);
     favBtn.classList.toggle("text-slate-400", !isFavorite);
-    favBtn.classList.toggle("hover:text-fuchsia-400", !isFavorite);
     favBtn.querySelector("svg")?.classList.toggle("fill-current", isFavorite);
   }
 

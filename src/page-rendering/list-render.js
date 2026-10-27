@@ -24,21 +24,25 @@ export function renderSongs(playlist, player, query = "") {
     ? playlist.findByStr(searchQuery)
     : playlist.toArray();
   const currentSongId = player?.currentNode?.song?.id;
+  const isPlaying = Boolean(player?.isPlaying);
   const playId = escapeHtml(playlist?.id);
 
   const songRows = songNodes
     .map((node) => {
       const song = node.song;
       const isCurrent = song.id === currentSongId;
+      const isNowPlaying = isCurrent && isPlaying;
       const songId = escapeHtml(song.id);
       const title = escapeHtml(song.title ?? "Untitled");
       const artist = escapeHtml(song.artist ?? "Unknown artist");
       const cover = escapeHtml(song.cover);
       const album = escapeHtml(song.album ?? song.title ?? "Song");
       const isFavorite = Boolean(song.isFavorite);
-      const rowStyle = isCurrent
-        ? "bg-blue-900/70 ring-1 ring-blue-500/50 text-gradient"
-        : "bg-slate-900 text-white";
+      const rowStyle = isNowPlaying
+        ? "border-l-4 border-fuchsia-400 bg-blue-900/80 ring-1 ring-fuchsia-400/50 shadow-lg shadow-fuchsia-950/20"
+        : isCurrent
+          ? "border-l-4 border-cyan-400 bg-blue-950/70"
+          : "border-l-4 border-transparent bg-slate-900 text-white";
 
       return /* html */ `
         <li
@@ -46,7 +50,7 @@ export function renderSongs(playlist, player, query = "") {
           data-song-id="${songId}"
           data-play-id="${playId}"
           aria-current="${isCurrent}"
-          class="flex min-w-0 items-center gap-3 rounded-lg px-3 py-2 ${rowStyle}"
+          class="song-row flex min-w-0 cursor-pointer items-center gap-3 rounded-lg px-3 py-2 transition-colors ${rowStyle}"
         >
           <img
             src="${cover}"
@@ -55,7 +59,8 @@ export function renderSongs(playlist, player, query = "") {
           />
 
           <div class="min-w-0 flex-1">
-            <p class="truncate text-sm font-semibold">
+            ${isCurrent ? `<span data-song-status class="mb-0.5 inline-block rounded-full bg-fuchsia-400/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-fuchsia-200">${isNowPlaying ? "Now playing" : "Paused"}</span>` : ""}
+            <p data-song-title class="truncate text-sm font-semibold ${isNowPlaying ? "text-gradient" : "text-white"}">
               ${title}
             </p>
             <p class="truncate text-xs text-slate-400">${artist}</p>
@@ -104,6 +109,7 @@ export function renderSongs(playlist, player, query = "") {
     lastRenderedPlaylist = playlist;
     lastRenderedPlayer = player;
     lastRenderedQuery = searchQuery;
+    updatePlaylistHeading(playlist);
     container.innerHTML = html;
     container
       .querySelectorAll('li[data-action="select-song"]')
@@ -132,4 +138,70 @@ export function refreshRenderedSongs(event) {
   }
 
   renderSongs(lastRenderedPlaylist, lastRenderedPlayer, lastRenderedQuery);
+}
+
+// Keep the current playlist label and cover alongside the view's controls.
+function updatePlaylistHeading(playlist) {
+  const heading = document.getElementById("rendered-playlist-heading");
+  if (!heading) return;
+
+  heading.replaceChildren();
+  const title = document.createElement("h1");
+  title.className = "min-w-0 max-w-full truncate text-2xl font-semibold text-white md:text-3xl";
+  title.textContent = playlist.isSearchResults ? "Search results" : playlist.name;
+
+  if (!playlist.isSearchResults && playlist.cover && playlist.cover !== "none") {
+    const image = document.createElement("img");
+    image.src = playlist.cover;
+    image.alt = `${playlist.name} cover`;
+    image.className = "aspect-square w-full max-w-[32rem] rounded-xl object-cover shadow-lg shadow-cyan-950/40";
+    heading.append(image);
+  }
+
+  heading.className = "flex min-w-0 flex-col items-start gap-3 px-4 pt-4";
+  heading.append(title);
+}
+
+// Update the current-song treatment without rebuilding rows during audio events.
+export function syncRenderedSongState(player) {
+  const container = document.getElementById("song-container");
+  if (!container?.querySelector("ul")) return;
+
+  const currentSongId = player?.currentNode?.song?.id;
+  const isPlaying = Boolean(player?.isPlaying);
+
+  container.querySelectorAll('li[data-action="select-song"]').forEach((row) => {
+    const isCurrent = Number(row.dataset.songId) === currentSongId;
+    const isNowPlaying = isCurrent && isPlaying;
+    row.setAttribute("aria-current", String(isCurrent));
+    row.classList.toggle("border-fuchsia-400", isNowPlaying);
+    row.classList.toggle("bg-blue-900/80", isNowPlaying);
+    row.classList.toggle("ring-1", isNowPlaying);
+    row.classList.toggle("ring-fuchsia-400/50", isNowPlaying);
+    row.classList.toggle("shadow-lg", isNowPlaying);
+    row.classList.toggle("shadow-fuchsia-950/20", isNowPlaying);
+    row.classList.toggle("border-cyan-400", isCurrent && !isPlaying);
+    row.classList.toggle("bg-blue-950/70", isCurrent && !isPlaying);
+    row.classList.toggle("border-transparent", !isCurrent);
+    row.classList.toggle("bg-slate-900", !isCurrent);
+
+    const title = row.querySelector("[data-song-title]");
+    title?.classList.toggle("text-gradient", isNowPlaying);
+    title?.classList.toggle("text-white", !isNowPlaying);
+
+    let status = row.querySelector("[data-song-status]");
+    if (!isCurrent) {
+      status?.remove();
+      return;
+    }
+
+    if (!status) {
+      status = document.createElement("span");
+      status.dataset.songStatus = "";
+      status.className =
+        "mb-0.5 inline-block rounded-full bg-fuchsia-400/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-fuchsia-200";
+      title?.before(status);
+    }
+    status.textContent = isNowPlaying ? "Now playing" : "Paused";
+  });
 }

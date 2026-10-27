@@ -10,6 +10,10 @@
   --font-neon-pulse: "NeonPulse", monospace;
 }
 
+button:not(:disabled) {
+  cursor: pointer;
+}
+
 @utility logo {
   font-family: var(--font-neon-pulse);
   color: white;
@@ -144,6 +148,15 @@
 .player-icon-button:hover {
   background: rgb(255 255 255 / 7%);
   filter: drop-shadow(0 0 8px currentColor);
+}
+
+#mini-player .player-icon-button:hover {
+  background: transparent;
+  filter: drop-shadow(0 0 9px currentColor);
+}
+
+#mini-player .player-icon-button:active {
+  transform: scale(0.94);
 }
 
 .player-icon-button:active {
