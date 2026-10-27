@@ -261,8 +261,35 @@ button:not(:disabled) {
   display: flex;
   min-height: 0;
   grid-area: cover;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem;
+}
+
+.mini-player-current-playlist {
+  display: inline-flex;
+  max-width: min(80vw, 34rem);
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 9999px;
+  padding: 0.35rem 0.75rem;
+  color: rgb(103 232 249);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  text-decoration: underline;
+  text-underline-offset: 0.2rem;
+  white-space: nowrap;
+}
+
+.mini-player-current-playlist:hover {
+  color: rgb(207 250 254);
+}
+
+#mini-player .mini-player-current-playlist[hidden] {
+  display: none;
 }
 
 #mini-player.is-expanded .expanded-song-cover {

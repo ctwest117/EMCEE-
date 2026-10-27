@@ -196,6 +196,7 @@ export function syncMiniPlayer(player) {
   const album = document.querySelector("#mini-song-album");
   const cover = document.querySelector("#mini-song-cover");
   const expandedCover = document.querySelector("#expanded-song-cover");
+  const currentPlaylistLink = document.querySelector("#mini-current-playlist");
   const playPause = document.querySelector("#play-pause");
   const favBtn = document.querySelector("#toggle-favorite");
   const loopButton = document.querySelector("#toggle-loop");
@@ -204,10 +205,25 @@ export function syncMiniPlayer(player) {
   if (!title || !artist || !playPause) return;
 
   const song = player.currentNode?.song;
+  const currentPlaylist = player.currentPlaylist;
   updateMediaSession(player, song);
   title.textContent = song?.title ?? "Nothing playing";
   artist.textContent = song?.artist ?? "Choose a song to start listening";
   if (album) album.textContent = song?.album ?? "";
+  if (currentPlaylistLink) {
+    const canOpenPlaylist = Boolean(
+      currentPlaylist && !currentPlaylist.isSearchResults,
+    );
+    currentPlaylistLink.hidden = !canOpenPlaylist;
+    if (canOpenPlaylist) {
+      currentPlaylistLink.textContent = currentPlaylist.name;
+      currentPlaylistLink.setAttribute(
+        "aria-label",
+        `Open playlist ${currentPlaylist.name}`,
+      );
+      currentPlaylistLink.title = currentPlaylist.name;
+    }
+  }
   syncRenderedSongState(player);
   syncRenderedPlaylists(player);
 

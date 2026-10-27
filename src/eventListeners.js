@@ -415,6 +415,15 @@ export function setupEventListeners(player) {
           syncMiniPlayer(player);
           break;
 
+        case "open-current-playlist": {
+          const playlist = player.currentPlaylist;
+          if (!playlist || playlist.isSearchResults) break;
+
+          document.querySelector("#mini-player")?.classList.remove("is-expanded");
+          renderPlaylist(playlist, player);
+          break;
+        }
+
         case "toggle-loop": {
           const loopOrder = ["off", "all", "one"];
           const currentIndex = loopOrder.indexOf(player.loop);

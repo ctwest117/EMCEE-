@@ -24,7 +24,14 @@ export function renderMini() {
         class="mini-player-collapse player-icon-button text-cyan-300"
       ><i data-lucide="chevron-down" aria-hidden="true"></i></button>
 
-      <div class="mini-player-cover-stage" aria-hidden="true">
+      <div class="mini-player-cover-stage">
+        <button
+          id="mini-current-playlist"
+          type="button"
+          data-action="open-current-playlist"
+          class="mini-player-current-playlist"
+          hidden
+        ></button>
         <img id="expanded-song-cover" class="expanded-song-cover" alt="" />
       </div>
 

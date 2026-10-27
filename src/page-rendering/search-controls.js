@@ -64,7 +64,6 @@ export function renderSearch(player) {
         value="20"
         aria-label="Maximum API search results"
         title="API result limit"
-        disabled
         class="w-14 shrink-0 rounded-lg border border-blue-800 bg-slate-950 px-2 py-2 text-base text-white focus:border-cyan-400 focus:outline-none disabled:cursor-not-allowed disabled:opacity-40"
       />
       <details id="search-source" class="relative z-20 shrink-0">
@@ -72,7 +71,7 @@ export function renderSearch(player) {
           id="search-source-trigger"
           class="flex h-10 w-20 list-none cursor-pointer items-center justify-between rounded-lg border border-blue-800 bg-slate-950 px-2 text-sm text-cyan-100 hover:border-cyan-500 focus:outline-none [&::-webkit-details-marker]:hidden"
         >
-          <span id="search-source-label">Local</span>
+          <span id="search-source-label">API</span>
           <i data-lucide="chevron-down" aria-hidden="true" class="h-4 w-4"></i>
         </summary>
         <div
@@ -83,14 +82,14 @@ export function renderSearch(player) {
           <button
             type="button"
             role="menuitemradio"
-            aria-checked="true"
+            aria-checked="false"
             data-search-source="local"
             class="w-full rounded-lg px-3 py-2 text-left text-sm text-cyan-100 hover:bg-cyan-950/70"
           >Local</button>
           <button
             type="button"
             role="menuitemradio"
-            aria-checked="false"
+            aria-checked="true"
             data-search-source="api"
             class="w-full rounded-lg px-3 py-2 text-left text-sm text-cyan-100 hover:bg-cyan-950/70"
           >API</button>
@@ -105,7 +104,7 @@ export function renderSearch(player) {
   const sourceMenu = controls.querySelector("#search-source");
   const sourceLabel = controls.querySelector("#search-source-label");
   const status = controls.querySelector("#search-status");
-  let searchSource = "local";
+  let searchSource = "api";
 
   const runSearch = async () => {
     const searchId = ++latestSearch;
