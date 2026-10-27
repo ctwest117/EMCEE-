@@ -68,7 +68,9 @@ function stopProgressAnimation() {
 export function syncMiniPlayer(player) {
   const title = document.querySelector("#mini-song-title");
   const artist = document.querySelector("#mini-song-artist");
+  const album = document.querySelector("#mini-song-album");
   const cover = document.querySelector("#mini-song-cover");
+  const expandedCover = document.querySelector("#expanded-song-cover");
   const playPause = document.querySelector("#play-pause");
   const favBtn = document.querySelector("#toggle-favorite");
   const loopButton = document.querySelector("#toggle-loop");
@@ -79,6 +81,7 @@ export function syncMiniPlayer(player) {
   const song = player.currentNode?.song;
   title.textContent = song?.title ?? "Nothing playing";
   artist.textContent = song?.artist ?? "Choose a song to start listening";
+  if (album) album.textContent = song?.album ?? "";
   syncRenderedSongState(player);
   syncRenderedPlaylists(player);
 
@@ -92,7 +95,15 @@ export function syncMiniPlayer(player) {
     if (song?.cover) cover.src = song.cover;
     else cover.removeAttribute("src");
     cover.alt = song ? `Album cover for ${song.album}` : "";
-    cover.classList.toggle("md:block", Boolean(song?.cover));
+  }
+
+  if (expandedCover) {
+    if (song?.cover) {
+      expandedCover.src = song.cover.replace("100x100", "400x400");
+    } else {
+      expandedCover.removeAttribute("src");
+    }
+    expandedCover.alt = song ? `Album cover for ${song.album}` : "";
   }
 
   if (songOptionsButton) {
@@ -173,6 +184,80 @@ export function syncMiniPlayer(player) {
 export function miniPlayerListeners(player) {
   const progress = document.querySelector("#progress");
   if (!progress) return;
+
+  const miniPlayer = document.querySelector("#mini-player");
+  const collapseButton = document.querySelector("#mini-player-collapse");
+  let gestureStart = null;
+  let suppressClickUntil = 0;
+
+  const setExpanded = (expanded) => {
+    miniPlayer?.classList.toggle("is-expanded", expanded);
+    collapseButton?.setAttribute("aria-expanded", String(expanded));
+  };
+
+  collapseButton?.addEventListener("click", () => setExpanded(false));
+
+  miniPlayer?.addEventListener("click", (event) => {
+    if (Date.now() < suppressClickUntil) return;
+    if (
+      event.target.closest(
+        'button, input, select, textarea, a, [contenteditable="true"]',
+      )
+    ) {
+      return;
+    }
+    setExpanded(!miniPlayer.classList.contains("is-expanded"));
+  });
+
+  miniPlayer?.addEventListener("pointerdown", (event) => {
+    if (
+      event.target.closest(
+        'button, input, select, textarea, a, [contenteditable="true"]',
+      )
+    ) {
+      gestureStart = null;
+      return;
+    }
+    gestureStart = {
+      pointerId: event.pointerId,
+      y: event.clientY,
+      expanded: miniPlayer.classList.contains("is-expanded"),
+    };
+    miniPlayer.setPointerCapture(event.pointerId);
+  });
+
+  miniPlayer?.addEventListener("pointermove", (event) => {
+    if (!gestureStart || gestureStart.pointerId !== event.pointerId) return;
+    const deltaY = event.clientY - gestureStart.y;
+    if (Math.abs(deltaY) < 3) return;
+
+    const dragOffset = gestureStart.expanded
+      ? Math.max(0, deltaY)
+      : Math.min(0, deltaY);
+    miniPlayer.classList.add("is-dragging");
+    miniPlayer.style.setProperty("--mini-player-drag-offset", `${dragOffset}px`);
+  });
+
+  miniPlayer?.addEventListener("pointerup", (event) => {
+    if (!gestureStart || gestureStart.pointerId !== event.pointerId) return;
+    const deltaY = event.clientY - gestureStart.y;
+    const wasExpanded = gestureStart.expanded;
+    gestureStart = null;
+
+    if (Math.abs(deltaY) > 8) suppressClickUntil = Date.now() + 500;
+    if ((!wasExpanded && deltaY < -40) || (wasExpanded && deltaY > 40)) {
+      setExpanded(!wasExpanded);
+    }
+
+    miniPlayer.classList.remove("is-dragging");
+    miniPlayer.style.removeProperty("--mini-player-drag-offset");
+  });
+
+  miniPlayer?.addEventListener("pointercancel", () => {
+    gestureStart = null;
+    miniPlayer.classList.remove("is-dragging");
+    miniPlayer.style.removeProperty("--mini-player-drag-offset");
+  });
 
   // Persist playback progress every few seconds, and exactly when it pauses
   // or the user finishes seeking. Avoid writing to storage on every timeupdate.

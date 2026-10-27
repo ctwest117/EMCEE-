@@ -159,6 +159,179 @@ button:not(:disabled) {
   transform: scale(0.94);
 }
 
+#mini-player {
+  isolation: isolate;
+  transition: transform 180ms ease;
+}
+
+#mini-player.is-dragging {
+  transform: translateY(var(--mini-player-drag-offset, 0px));
+  transition: none;
+}
+
+#mini-player > .mini-player-shell {
+  box-sizing: border-box;
+  grid-template-areas:
+    "progress progress progress"
+    "track transport actions";
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  touch-action: pan-x;
+}
+
+.mini-player-collapse,
+.mini-player-cover-stage {
+  display: none;
+}
+
+.mini-player-track-info {
+  grid-area: track;
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mini-player-side-controls {
+  grid-area: actions;
+  justify-self: end;
+}
+
+.mini-player-song-copy {
+  flex: 1 1 auto;
+}
+
+.mini-song-album {
+  display: none;
+}
+
+.mini-player-progress {
+  grid-area: progress;
+  min-width: 0;
+}
+
+.mini-player-time {
+  display: none;
+}
+
+.mini-player-transport {
+  grid-area: transport;
+}
+
+.mini-player-expanded-control {
+  display: none !important;
+}
+
+#mini-player.is-expanded {
+  top: 3.5rem;
+}
+
+#mini-player.is-expanded > .mini-player-shell {
+  height: 100%;
+  grid-template-areas:
+    "collapse collapse"
+    "cover cover"
+    "track actions"
+    "progress progress"
+    "transport transport";
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(0, 1fr) auto auto auto;
+  align-content: stretch;
+  justify-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem max(1rem, env(safe-area-inset-bottom));
+  background-color: rgb(2 6 23 / 78%);
+  touch-action: pan-x;
+}
+
+#mini-player.is-expanded .mini-player-collapse {
+  display: inline-flex;
+  grid-area: collapse;
+  width: 2.75rem;
+  height: 2.75rem;
+}
+
+#mini-player.is-expanded .mini-player-cover-stage {
+  display: flex;
+  min-height: 0;
+  grid-area: cover;
+  align-items: center;
+  justify-content: center;
+}
+
+#mini-player.is-expanded .expanded-song-cover {
+  display: block;
+  width: min(80vw, 50vh, 34rem);
+  max-height: 100%;
+  aspect-ratio: 1;
+  border-radius: 1rem;
+  object-fit: contain;
+  box-shadow: 0 18px 60px rgb(0 0 0 / 45%);
+}
+
+#mini-player.is-expanded .mini-player-track-info {
+  display: flex;
+  width: min(100%, 48rem);
+  justify-self: center;
+  gap: 0;
+}
+
+#mini-player.is-expanded .mini-song-cover {
+  display: none;
+}
+
+#mini-player.is-expanded .mini-player-song-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+#mini-player.is-expanded #mini-song-title {
+  font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+}
+
+#mini-player.is-expanded #mini-song-artist,
+#mini-player.is-expanded .mini-song-album {
+  display: block;
+  font-size: clamp(0.875rem, 1.8vw, 1rem);
+}
+
+#mini-player.is-expanded .mini-player-side-controls .player-icon-button {
+  width: 2.75rem;
+  height: 2.75rem;
+}
+
+#mini-player.is-expanded .mini-player-side-controls {
+  align-self: center;
+  justify-self: end;
+}
+
+#mini-player.is-expanded .mini-player-progress {
+  width: min(100%, 48rem);
+}
+
+#mini-player.is-expanded .mini-player-time {
+  display: flex;
+}
+
+#mini-player.is-expanded .mini-player-transport {
+  justify-self: center;
+  gap: clamp(0.25rem, 2vw, 1rem);
+}
+
+#mini-player.is-expanded .mini-player-expanded-control {
+  display: inline-flex !important;
+}
+
+#mini-player.is-expanded #toggle-loop {
+  margin-right: clamp(0.25rem, 2vw, 1rem);
+}
+
+#mini-player.is-expanded #toggle-shuffle {
+  margin-left: clamp(0.25rem, 2vw, 1rem);
+}
+
 .player-icon-button:active {
   transform: scale(0.94);
 }
