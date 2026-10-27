@@ -222,6 +222,12 @@ button:not(:disabled) {
   display: none !important;
 }
 
+@media (min-width: 768px) {
+  #mini-player:not(.is-expanded) .mini-player-expanded-control {
+    display: inline-flex !important;
+  }
+}
+
 #mini-player.is-expanded {
   top: 3.5rem;
 }
