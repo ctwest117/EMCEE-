@@ -1,4 +1,5 @@
 import { renderPlayerIcons } from "../assets/icons.js";
+import Sortable from "sortablejs";
 
 let lastRenderedPlaylist = null;
 let lastRenderedPlayer = null;
@@ -69,6 +70,16 @@ export function renderSongs(playlist, player, query = "") {
           <div class="flex shrink-0 items-center gap-1">
             <button
               type="button"
+              data-action="song-drag-handle"
+              data-song-id="${songId}"
+              aria-label="Reorder ${title}"
+              title="Reorder ${title}"
+              class="player-icon-button cursor-grab text-slate-400 hover:text-white"
+            >
+              <i data-lucide="grip-horizontal" aria-hidden="true"></i>
+            </button>
+            <button
+              type="button"
               data-action="toggle-favorite"
               data-song-id="${songId}"
               aria-pressed="${isFavorite}"
@@ -115,6 +126,23 @@ export function renderSongs(playlist, player, query = "") {
       .forEach((row, index) => {
         row.songNode = songNodes[index];
       });
+
+    const songList = container.querySelector("ul");
+    if (songList && playlist && !playlist.isSearchResults && !searchQuery) {
+      Sortable.create(songList, {
+        animation: 150,
+        direction: "vertical",
+        draggable: 'li[data-action="select-song"]',
+        handle: '[data-action="song-drag-handle"]',
+        onEnd(event) {
+          const node = event.item.songNode;
+          if (node?.playlist === playlist) {
+            playlist.moveSong(node, event.newIndex);
+          }
+        },
+      });
+    }
+
     renderPlayerIcons();
   }
 

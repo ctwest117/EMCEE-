@@ -27,6 +27,7 @@ import {
   ListX,
   Plus,
   Pencil,
+  GripHorizontal,
 } from "lucide";
 
 export function renderPlayerIcons() {
@@ -59,6 +60,7 @@ export function renderPlayerIcons() {
       Funnel,
       FunnelPlus,
       Globe,
+      GripHorizontal,
     },
   });
 }

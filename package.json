@@ -15,7 +15,8 @@
     "vite": "^7.1.9"
   },
   "dependencies": {
-    "lucide": "^1.60.0"
+    "lucide": "^1.60.0",
+    "sortablejs": "^1.15.7"
   },
   "allowScripts": {
     "esbuild@0.28.2": true
