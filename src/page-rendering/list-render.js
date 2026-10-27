@@ -1,4 +1,5 @@
 import { renderPlayerIcons } from "../assets/icons.js";
+import { Lib } from "../song-data/song-library.js";
 import Sortable from "sortablejs";
 
 let lastRenderedPlaylist = null;
@@ -38,7 +39,9 @@ export function renderSongs(playlist, player, query = "") {
       const artist = escapeHtml(song.artist ?? "Unknown artist");
       const cover = escapeHtml(song.cover);
       const album = escapeHtml(song.album ?? song.title ?? "Song");
-      const isFavorite = Boolean(song.isFavorite);
+      const isFavorite = Boolean(
+        song.isFavorite || Lib.songs.get(song.id)?.isFavorite,
+      );
       const rowStyle = isNowPlaying
         ? "border-l-4 border-fuchsia-400 bg-blue-900/80 ring-1 ring-fuchsia-400/50 shadow-lg shadow-fuchsia-950/20"
         : isCurrent
