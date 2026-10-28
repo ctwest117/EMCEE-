@@ -231,6 +231,7 @@ export class MusicPlayer {
       }
     }
     this.queuePrev = this.currentNode;
+    if (this.queue.length === 0) this.isQueue = false;
 
     if (!this.currentNode) this.isPlaying = false;
     this.updateSrc();

@@ -71,6 +71,7 @@ export function renderSongs(playlist, player, query = "") {
           </div>
 
           <div class="flex shrink-0 items-center gap-1">
+            ${playlist.isSearchResults ? "" : /* html */ `
             <button
               type="button"
               data-action="song-drag-handle"
@@ -81,6 +82,7 @@ export function renderSongs(playlist, player, query = "") {
             >
               <i data-lucide="grip-horizontal" aria-hidden="true"></i>
             </button>
+            `}
             <button
               type="button"
               data-action="toggle-favorite"

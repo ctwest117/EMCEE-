@@ -138,6 +138,8 @@ function keepMenuInViewport(details) {
 
 // Use one delegated click listener so actions also work on newly rendered buttons.
 export function setupEventListeners(player, router) {
+  window.addEventListener("hashchange", closeOptionsMenus);
+
   // Close floating menus when the page or a content container scrolls.
   window.addEventListener(
     "scroll",
