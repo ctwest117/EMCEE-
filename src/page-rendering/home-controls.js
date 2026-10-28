@@ -7,7 +7,6 @@ let searchTimeout;
 export function renderHome(player) {
   const controls = document.getElementById("view-controls");
   if (!controls) return;
-  if (player) player.lastRenderedView = { type: "home" };
   clearTimeout(searchTimeout);
 
   controls.innerHTML = /* html */ `
@@ -55,6 +54,7 @@ export function renderHome(player) {
   searchInput.addEventListener("input", () => {
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => {
+      if (!controls.contains(searchInput)) return;
       renderPlaylists(player, searchInput.value);
     }, 1000);
   });

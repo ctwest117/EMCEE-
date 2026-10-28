@@ -22,7 +22,8 @@ Emcee is for listeners who want a lightweight way to organize and play music pre
 - Shuffle playlists and choose a repeat mode: none, all, or one.
 - Expand the mini-player by clicking or dragging it upward. The expanded player shows larger album artwork, track details, progress, and playback controls over the current view.
 - Show a spinning Disc3 icon while an API search is in progress.
-- Save playlists, library data, playback settings, and the last open Home or playlist view in browser `localStorage`.
+- Navigate between Home, Search, and playlists using browser Back and Forward.
+- Save playlists, library data, and playback settings in browser `localStorage`.
 - Use responsive controls and contextual song and playlist menus.
 
 ## Technologies
@@ -81,6 +82,7 @@ The tests cover player behavior, playlist and library operations, API result han
 - `src/music-player-data/`: Playback state, queue, loop and shuffle behavior, and persistence.
 - `src/api-data/`: iTunes Search API requests.
 - `src/page-rendering/`: Header, home, playlist, search, and song-list views.
+- `src/router.js`: Hash routes and browser history navigation.
 - `src/mini-player/`: Mini-player rendering and song and playlist option menus.
 - `src/eventListeners.js`: Delegated UI actions and menu interactions.
 - `src/assets/`: Icons, images, and fonts.
@@ -90,6 +92,8 @@ The tests cover player behavior, playlist and library operations, API result han
 
 - iTunes search supplies preview audio rather than full-length tracks. The preview is typically 30 seconds, and the API does not provide a way for Emcee to request an arbitrary starting offset within the full track. Preview availability can vary by result and storefront. See Apple's [Search API result fields](https://developer.apple.com/library/archive/documentation/AudioVideo/Conceptual/iTuneSearchAPI/UnderstandingSearchResults.html).
 - Saved data is local to one browser and can be lost if its site data is cleared. There is no account, cloud sync, or server-side storage.
+- Playlist URLs use IDs from the current browser's library; they do not share playlist contents with another browser.
+- Returning to Search through browser history opens a fresh search rather than restoring the previous query or results.
 - Automated tests cover the data and interaction logic; the visual renderers do not yet have browser-based integration tests.
 - Playlist covers are entered as image URLs; the app does not upload or host images.
 - The expanded player requests a 400×400 artwork URL by replacing `100x100` in the song artwork URL. Higher-resolution artwork depends on the image host having that size available.

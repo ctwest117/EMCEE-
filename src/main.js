@@ -15,14 +15,14 @@ import {
   refreshRenderedSongs,
   renderSongs,
 } from "./page-rendering/list-render";
-import { renderHome } from "./page-rendering/home-controls";
-import { renderPlaylist } from "./page-rendering/playlist-controls";
+import { createRouter } from "./router.js";
 export const Player = new MusicPlayer();
+const router = createRouter(Player);
 
 renderHeader();
 renderMini();
 miniPlayerListeners(Player);
-setupEventListeners(Player);
+setupEventListeners(Player, router);
 document.addEventListener("playlistchange", refreshRenderedSongs);
 
 function saveAppState() {
@@ -43,14 +43,7 @@ syncMiniPlayer(Player);
 // Persist the fully restored startup state once, after restore has finished.
 Playlist.save();
 
-const lastRenderedView = Player.lastRenderedView;
-const lastPlaylist =
-  lastRenderedView?.type === "playlist"
-    ? Playlist.myPlaylists.get(lastRenderedView.id)
-    : null;
-
-if (lastPlaylist) renderPlaylist(lastPlaylist, Player);
-else renderHome(Player);
+router.start();
 
 Player.save();
 

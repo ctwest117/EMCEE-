@@ -20,7 +20,6 @@ function escapeHtml(value) {
 export function renderPlaylist(playlist, player) {
   const controls = document.getElementById("view-controls");
   if (!controls || !playlist) return;
-  if (player) player.lastRenderedView = { type: "playlist", id: playlist.id };
   clearTimeout(searchTimeout);
 
   const playId = String(playlist.id);
@@ -113,6 +112,7 @@ export function renderPlaylist(playlist, player) {
   searchInput.addEventListener("input", () => {
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => {
+      if (!controls.contains(searchInput)) return;
       renderSongs(playlist, player, searchInput.value);
     }, 1000);
   });

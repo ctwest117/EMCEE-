@@ -179,7 +179,10 @@ export class Playlist {
         id: playlist.id,
         name: playlist.name,
         cover: playlist.cover,
-        songs: playlist.toSongArray().map((song) => song.id),
+        songs: playlist.toArray().map((node) => ({
+          id: node.song.id,
+          orderAdded: node.orderAdded,
+        })),
         sortMethod: playlist.sortMethod,
       });
     }
@@ -197,27 +200,40 @@ export class Playlist {
       res.forEach((playlist) => {
         if (playlist.id >= Playlist.nextId) Playlist.nextId = playlist.id + 1;
 
-        if (playlist.id === 100) {
-          playlist.songs.forEach((songId) => {
-            const song = Lib.songs.get(songId) ?? null;
-            if (song?.isFavorite) Playlist.addToFavorites(song);
-          });
-          return;
-        }
+        const isFavorites = playlist.id === Playlist.favorites.id;
+        const restoredPlaylist = isFavorites
+          ? Playlist.favorites
+          : new Playlist(playlist.name, playlist.cover, playlist.id);
 
-        const newPlaylist = new Playlist(
-          playlist.name,
-          playlist.cover,
-          playlist.id,
-        );
-        newPlaylist.sortMethod = "none";
-
-        playlist.songs.forEach((songId) => {
+        // Append in saved display order; sorting can be applied later.
+        restoredPlaylist.sortMethod = "none";
+        playlist.songs.forEach((savedSong) => {
+          // Older saves contain song IDs instead of objects.
+          const songId =
+            savedSong !== null && typeof savedSong === "object"
+              ? savedSong.id
+              : savedSong;
           const song = Lib.songs.get(songId) ?? null;
-          if (song) newPlaylist.addSong(song);
+          if (!song || (isFavorites && !song.isFavorite)) return;
+
+          const node = restoredPlaylist.addSong(song);
+          if (node.playlist !== restoredPlaylist) return;
+
+          const orderAdded = savedSong?.orderAdded;
+          if (Number.isSafeInteger(orderAdded) && orderAdded >= 0) {
+            node.orderAdded = orderAdded;
+            restoredPlaylist.nextOrder = Math.max(
+              restoredPlaylist.nextOrder,
+              orderAdded + 1,
+            );
+          }
         });
 
-        newPlaylist.sortMethod = playlist.sortMethod;
+        restoredPlaylist.sortMethod = Playlist.sortMethods.includes(
+          playlist.sortMethod,
+        )
+          ? playlist.sortMethod
+          : "default";
       });
       return true;
     } finally {

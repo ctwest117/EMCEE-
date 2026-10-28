@@ -1,13 +1,7 @@
 import { Playlist } from "./playlist-data/playlist-data.js";
 import { Lib } from "./song-data/song-library.js";
 import { syncMiniPlayer } from "./mini-player/mini-player-data.js";
-import {
-  refreshRenderedSongs,
-  renderSongs,
-} from "./page-rendering/list-render.js";
-import { renderHome } from "./page-rendering/home-controls.js";
-import { renderPlaylist } from "./page-rendering/playlist-controls.js";
-import { renderSearch } from "./page-rendering/search-controls.js";
+import { refreshRenderedSongs } from "./page-rendering/list-render.js";
 import { createPlaylistForm } from "./page-rendering/playlist-creation-form.js";
 
 // These menus are shared elements, so closing them also resets their triggers.
@@ -143,7 +137,7 @@ function keepMenuInViewport(details) {
 }
 
 // Use one delegated click listener so actions also work on newly rendered buttons.
-export function setupEventListeners(player) {
+export function setupEventListeners(player, router) {
   // Close floating menus when the page or a content container scrolls.
   window.addEventListener(
     "scroll",
@@ -294,7 +288,7 @@ export function setupEventListeners(player) {
 
           if (playlist && Playlist.removePlaylist(playlist)) {
             syncMiniPlayer(player);
-            renderHome(player);
+            router.navigate("home");
           }
           break;
         }
@@ -314,11 +308,7 @@ export function setupEventListeners(player) {
           playlist.removeAll();
           syncMiniPlayer(player);
 
-          if (document.querySelector("#song-container ul")) {
-            renderPlaylist(playlist, player);
-          } else {
-            renderHome(player);
-          }
+          router.refresh();
           break;
         }
 
@@ -419,8 +409,10 @@ export function setupEventListeners(player) {
           const playlist = player.currentPlaylist;
           if (!playlist || playlist.isSearchResults) break;
 
-          document.querySelector("#mini-player")?.classList.remove("is-expanded");
-          renderPlaylist(playlist, player);
+          document
+            .querySelector("#mini-player")
+            ?.classList.remove("is-expanded");
+          router.navigate("playlist", playlist.id);
           break;
         }
 
@@ -629,10 +621,10 @@ export function setupEventListeners(player) {
         }
 
         case "home":
-          renderHome(player);
+          router.navigate("home");
           break;
         case "search":
-          renderSearch(player);
+          router.navigate("search");
           break;
 
         case "scroll-top":
@@ -672,7 +664,7 @@ export function setupEventListeners(player) {
       const playlist = Playlist.myPlaylists.get(
         Number(playlistCard.dataset.playId),
       );
-      if (playlist) renderPlaylist(playlist, player);
+      if (playlist) router.navigate("playlist", playlist.id);
     }
   });
 
@@ -715,11 +707,7 @@ export function setupEventListeners(player) {
       playlist.cover = parsedUrl.href;
       Playlist.save();
       closePlaylistOptions();
-      if (document.querySelector("#song-search")) {
-        renderPlaylist(playlist, player);
-      } else {
-        renderHome(player);
-      }
+      router.refresh();
       return;
     }
 
@@ -749,11 +737,7 @@ export function setupEventListeners(player) {
     playlist.name = newName;
     Playlist.save();
     closePlaylistOptions();
-    if (document.querySelector("#song-search")) {
-      renderPlaylist(playlist, player);
-    } else {
-      renderHome(player);
-    }
+    router.refresh();
   });
 
   document.addEventListener("input", (event) => {

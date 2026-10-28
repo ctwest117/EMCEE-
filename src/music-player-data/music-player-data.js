@@ -20,7 +20,6 @@ export class MusicPlayer {
     this.isRestoringPlayback = false;
     this.queue = []; //queue carries between playlists
     this.queuePrev = null; //the last normal song played beforre queue, it changes everytime a song that isnt a queue song is selected or played
-    this.lastRenderedView = { type: "home" };
   }
 
   // save and restore playback
@@ -33,7 +32,6 @@ export class MusicPlayer {
       time: this.audio.currentTime,
       loop: this.loop,
       isShuffled: this.isShuffled,
-      lastRenderedView: this.lastRenderedView,
     };
     localStorage.setItem(this.keys, JSON.stringify(save));
   }
@@ -42,11 +40,6 @@ export class MusicPlayer {
     const save = localStorage.getItem(this.keys);
     if (!save) return -1;
     const res = JSON.parse(save);
-    const savedView = res.lastRenderedView;
-    this.lastRenderedView =
-      savedView?.type === "playlist" && Number.isFinite(savedView.id)
-        ? { type: "playlist", id: savedView.id }
-        : { type: "home" };
     const playlist =
       Playlist.myPlaylists.get(res.listId ?? 100) ?? Playlist.favorites;
 
