@@ -2,6 +2,8 @@
 
 Emcee is a responsive, browser-based music player for searching music, building playlists, and managing playback from a compact player interface.
 
+Try it live: [emcee-squared.netlify.app](https://emcee-squared.netlify.app/)
+
 ## Purpose
 
 This project explores how a client-side music player can organize songs and playlists, provide a queue and playback controls, and keep a listener's library available between visits. It is also a learning project built around JavaScript classes, browser audio, DOM rendering, and local persistence.
