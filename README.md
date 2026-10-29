@@ -1,4 +1,4 @@
-# Emcee
+# Emcee²
 
 Emcee is a responsive, browser-based music player for searching music, building playlists, and managing playback from a compact player interface.
 

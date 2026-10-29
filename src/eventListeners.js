@@ -58,10 +58,12 @@ function openMenuAtTrigger(details, trigger) {
 function renderQueue(details, player) {
   const list = details.querySelector("[data-queue-list]");
   const emptyMessage = details.querySelector("[data-queue-empty]");
+  const clearButton = details.querySelector('[data-action="queue-clear"]');
   if (!list || !emptyMessage) return;
 
   list.replaceChildren();
   emptyMessage.classList.toggle("hidden", player.queue.length > 0);
+  if (clearButton) clearButton.disabled = player.queue.length === 0;
 
   player.queue.forEach((queueNode, index) => {
     const item = document.createElement("li");
@@ -593,6 +595,12 @@ export function setupEventListeners(player, router) {
           const queueNode = player.queue[Number(button.dataset.queueIndex)];
           if (queueNode) player.removeFromQueue(queueNode);
           renderQueue(songDetails, player);
+          break;
+        }
+
+        case "queue-clear": {
+          player.clearQueue();
+          if (songDetails) renderQueue(songDetails, player);
           break;
         }
 

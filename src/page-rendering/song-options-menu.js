@@ -51,11 +51,20 @@ export function createSongOptionsMenu() {
       <section data-queue-view hidden class="min-w-56 text-white">
         <div class="mb-2 flex items-center justify-between border-b border-blue-700 pb-2">
           <h2 class="px-2 text-sm font-semibold">Queue</h2>
-          <button
-            type="button"
-            data-action="queue-view-back"
-            class="rounded-lg px-2 py-1 text-xs text-cyan-300 hover:bg-white/10"
-          >Back</button>
+          <div class="flex items-center gap-1">
+            <button
+              type="button"
+              data-action="queue-clear"
+              aria-label="Clear upcoming songs from queue"
+              class="rounded-lg px-2 py-1 text-xs text-rose-300 hover:bg-rose-950/60 disabled:cursor-not-allowed disabled:opacity-40"
+              disabled
+            >Clear queue</button>
+            <button
+              type="button"
+              data-action="queue-view-back"
+              class="rounded-lg px-2 py-1 text-xs text-cyan-300 hover:bg-white/10"
+            >Back</button>
+          </div>
         </div>
         <p data-queue-empty class="hidden px-2 py-3 text-sm text-slate-400">Queue is empty.</p>
         <ul data-queue-list class="space-y-1"></ul>
