@@ -1,5 +1,5 @@
 import { renderPlayerIcons } from "../assets/icons.js";
-import { Lib } from "../song-data/song-library.js";
+import { Lib } from "../data/song-library.js";
 import Sortable from "sortablejs";
 
 let lastRenderedPlaylist = null;

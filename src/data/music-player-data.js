@@ -1,6 +1,6 @@
-import { SongNode, Playlist } from "../playlist-data/playlist-data.js";
-import { Song } from "../song-data/song-data.js";
-import { Lib } from "../song-data/song-library.js";
+import { SongNode, Playlist } from "./playlist-data.js";
+import { Song } from "./song-data.js";
+import { Lib } from "./song-library.js";
 
 // MusicPlayer manages playback and tracks current playlist + song
 export class MusicPlayer {

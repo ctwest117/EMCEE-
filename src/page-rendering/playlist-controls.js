@@ -1,5 +1,5 @@
 import { renderPlayerIcons } from "../assets/icons.js";
-import { Playlist } from "../playlist-data/playlist-data.js";
+import { Playlist } from "../data/playlist-data.js";
 import { renderSongs } from "./list-render.js";
 
 let searchTimeout;

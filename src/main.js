@@ -1,16 +1,16 @@
 import "./style.css";
-import { searchSongs } from "./api-data/api-query";
-import { Song } from "./song-data/song-data";
-import { Lib } from "./song-data/song-library";
-import { Playlist } from "./playlist-data/playlist-data";
-import { MusicPlayer } from "./music-player-data/music-player-data";
-import { renderMini } from "./mini-player/mini-player-render";
+import { searchSongs } from "./data/api-query";
+import { Song } from "./data/song-data";
+import { Lib } from "./data/song-library";
+import { Playlist } from "./data/playlist-data";
+import { MusicPlayer } from "./data/music-player-data";
+import { renderMini } from "./page-rendering/mini-player-render";
 import { setupEventListeners } from "./eventListeners";
 import { renderHeader } from "./page-rendering/header-render";
 import {
   miniPlayerListeners,
   syncMiniPlayer,
-} from "./mini-player/mini-player-data";
+} from "./data/mini-player-data";
 import {
   refreshRenderedSongs,
   renderSongs,

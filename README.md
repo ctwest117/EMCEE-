@@ -77,13 +77,9 @@ The tests cover player behavior, playlist and library operations, API result han
 
 ## Project structure
 
-- `src/song-data/`: Song objects and the local song library.
-- `src/playlist-data/`: Playlists, song nodes, searching, sorting, and persistence.
-- `src/music-player-data/`: Playback state, queue, loop and shuffle behavior, and persistence.
-- `src/api-data/`: iTunes Search API requests.
-- `src/page-rendering/`: Header, home, playlist, search, and song-list views.
+- `src/data/`: Songs, the local library, playlists, playback state, mini-player synchronization, and iTunes API requests.
+- `src/page-rendering/`: Header, home, playlist, search, song-list and mini-player views, plus their option menus.
 - `src/router.js`: Hash routes and browser history navigation.
-- `src/mini-player/`: Mini-player rendering and song and playlist option menus.
 - `src/eventListeners.js`: Delegated UI actions and menu interactions.
 - `src/assets/`: Icons, images, and fonts.
 - `tests/`: Automated tests run by `node --test`.

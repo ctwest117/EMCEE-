@@ -1,8 +1,8 @@
 import { renderPlayerIcons } from "../assets/icons.js";
-import { searchSongs } from "../api-data/api-query.js";
-import { Playlist } from "../playlist-data/playlist-data.js";
-import { Song } from "../song-data/song-data.js";
-import { Lib } from "../song-data/song-library.js";
+import { searchSongs } from "../data/api-query.js";
+import { Playlist } from "../data/playlist-data.js";
+import { Song } from "../data/song-data.js";
+import { Lib } from "../data/song-library.js";
 import { renderSongs } from "./list-render.js";
 
 let searchTimeout;

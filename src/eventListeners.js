@@ -1,6 +1,6 @@
-import { Playlist } from "./playlist-data/playlist-data.js";
-import { Lib } from "./song-data/song-library.js";
-import { syncMiniPlayer } from "./mini-player/mini-player-data.js";
+import { Playlist } from "./data/playlist-data.js";
+import { Lib } from "./data/song-library.js";
+import { syncMiniPlayer } from "./data/mini-player-data.js";
 import { refreshRenderedSongs } from "./page-rendering/list-render.js";
 import { createPlaylistForm } from "./page-rendering/playlist-creation-form.js";
 

@@ -1,4 +1,4 @@
-import { Playlist } from "../playlist-data/playlist-data.js";
+import { Playlist } from "../data/playlist-data.js";
 
 let nextInputId = 0;
 

@@ -1,4 +1,4 @@
-import { Playlist } from "./playlist-data/playlist-data.js";
+import { Playlist } from "./data/playlist-data.js";
 import { renderHome } from "./page-rendering/home-controls.js";
 import { renderPlaylist } from "./page-rendering/playlist-controls.js";
 import { renderSearch } from "./page-rendering/search-controls.js";

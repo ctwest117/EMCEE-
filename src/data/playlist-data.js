@@ -1,5 +1,5 @@
-import { Song } from "../song-data/song-data.js";
-import { Lib } from "../song-data/song-library.js";
+import { Song } from "./song-data.js";
+import { Lib } from "./song-library.js";
 
 function notifyPlaylistChange(playlist, removed = false) {
   document.dispatchEvent(
